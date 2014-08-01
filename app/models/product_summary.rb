@@ -3,6 +3,7 @@ class ProductSummary < ActiveRecord::Base
   belongs_to :warehouse
   belongs_to :merchant_account
   has_many :temp_products
+  has_many :temp_import_details
 
   def self.products_of(warehouse_id)
     ProductSummary.where(warehouse_id: warehouse_id)

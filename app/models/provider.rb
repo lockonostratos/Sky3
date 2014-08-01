@@ -1,5 +1,6 @@
 class Provider < ActiveRecord::Base
   has_many :products
+  has_many :temp_import_details
 
   belongs_to :merchant
 

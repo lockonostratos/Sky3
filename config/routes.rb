@@ -5,5 +5,8 @@ Rails.application.routes.draw do
   get 'signup', :to => 'accounts#new', as: 'signup'
   resources :sessions
 
-  resources :accounts
+  scope "api" do
+    resources :accounts
+    resources :temp_import_details
+  end
 end
