@@ -1,0 +1,54 @@
+<header ng-controller="headerCtrl as header">
+  <div class="logo" ng-class="{'collapsed': application.collapsedMode}">
+    <a href="" class="navbar-brand sidebar-toggle" ng-click="application.toggleCollapse()">
+      <i class="fa fa-bars"
+         tooltip-placement="right" tooltip="{{application.collapsedMode ? 'mở rộng' : 'thu nhỏ'}}"></i>
+    </a>
+  </div>
+  <nav class="navbar navbar-static-top" role="navigation" ng-class="{'collapsed': application.collapsedMode}">
+    <div class="navbar-left">
+      <ul class="nav navbar-nav">
+        <li><a href="/" class="home-nav"><i class="fa fa-arrow-circle-o-left fa-3x"></i></a></li>
+        <li><span class="app-caption">{{application.Common.caption}}</span></li>
+      </ul>
+    </div>
+
+    <div class="navbar-right">
+      <ul class="nav navbar-nav">
+        <li class="dropdown menu teal">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+            <i class="fa fa-comments-o"></i>
+            <span class="label label-success">4</span>
+          </a>
+        </li>
+        <li class="dropdown menu peter-river">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+            <i class="fa fa-bell-o"></i>
+            <span class="label">4</span>
+          </a>
+        </li>
+        <li class="dropdown menu carrot">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+            <i class="fa fa-calendar"></i>
+            <span class="label label-success">4</span>
+          </a>
+        </li>
+        <li class="dropdown menu gray no-border">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+            <i class="fa fa-th-list"></i>
+          </a>
+        </li>
+      </ul>
+    </div>
+
+    <div class="navbar-form navbar-right search-form" role="search">
+      <div class="input-group">
+        <span class="input-group-btn">
+          <button type="submit" class="btn btn-default"><i class="fa fa-search"></i></button>
+        </span>
+        <input type="text" class="form-control search-box" placeholder="tìm sản phẩm, nhân sự, tổ chức...">
+      </div>
+    </div>
+  </nav>
+</header>
+

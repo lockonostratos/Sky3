@@ -9,10 +9,7 @@
     <%= csrf_meta_tags %>
   </head>
   <body>
-    <%= render 'layouts/navigation' %>
-    <%= render 'layouts/content' %>
     <%= yield %>
-    <%= javascript_include_tag 'application' %>
-    <%= yield :scripts %>
+    <%= yield :scripts%>
   </body>
 </html>

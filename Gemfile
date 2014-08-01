@@ -42,10 +42,6 @@ gem "font-awesome-rails"
 gem 'chunky_png'
 gem 'compass-rails'
 
-gem 'haml'
-gem 'haml-rails'
-gem 'eco'
-
 gem 'tzinfo-data'
 gem 'bcrypt', '~> 3.1.7'
 gem 'bcrypt-ruby', '~> 3.1.2'
