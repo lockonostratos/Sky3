@@ -1,0 +1,226 @@
+@import "compass";
+@import "bootstrap-sprockets";
+@import "bootstrap";
+@import "font-awesome";
+@import "theme";
+@import "variables";
+@import "mixins";
+@import "components";
+@import "xeditable";
+
+@import "dx.common";
+@import "dx.light";
+
+@import "resolutions/wide";
+@import "resolutions/tablet";
+@import "resolutions/mobile";
+
+input:focus { outline:none; }
+
+a { text-decoration: none !important; }
+
+body {
+//  @include center-gradial(#dad9d9, 100%);
+  font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+@mixin collapse-transition ($duration: 0.25s) {
+  @include transition-duration($duration);
+  @include transition-timing-function(ease);
+}
+
+@mixin logo-collapsed {
+  width: $left-pane-collapsed;
+}
+
+@mixin navbar-collapsed {
+  margin-left: $left-pane-collapsed;
+}
+
+header {
+  position: fixed;
+  z-index: 1001;
+  display: block;
+  top: 0; right: 0; left: 0;
+
+  .logo {
+    float: left;
+    width: $left-pane;
+    height: 50px;
+    color: #fff;
+    font-size: 20px;
+
+    .sidebar-toggle {
+      color: #fff;
+      float: right;
+    }
+
+    @include collapse-transition();
+    &.collapsed { @include logo-collapsed; }
+
+    @media only screen and (max-width : 992px) {
+      @include logo-collapsed;
+      &.collapsed { margin-left: -$left-pane-collapsed }
+    }
+  }
+
+  .navbar{
+    background-color: #fff;
+    border-bottom: 1px solid #e6e6e6;
+    margin-left: $left-pane;
+    margin-bottom: 0;
+    i, a { color: #5e5e5e; }
+
+    .home-nav {
+      padding: 4px 10px 0 5px;
+
+      &:hover { i {color: $lime;} }
+    }
+
+    .app-caption {
+      font-size: 20px;
+      padding-top: 10px;
+      display: inline-block;
+      text-transform: uppercase;
+    }
+
+    .dropdown.menu {
+      a {
+        position: relative;
+        display: block;
+        border: 2px solid $amethyst;
+        border-radius: 50%;
+        color: #0AA699;
+        margin: 5px 3px 0 0;
+        padding: 6px 9px !important;
+        .label {
+          border-radius: 50%;
+          font-weight: 300;
+          position: absolute;
+          top:-4px; right: -2px;
+          padding: 2px 5px;
+        }
+      }
+
+      @each $color in $colors {
+        &.#{nth($color, 1)} > a {
+          border: 2px solid nth($color, 2);
+          &:hover {
+            background-color: nth($color, 2);
+            i { color: #fff; }
+          }
+        }
+        &.#{nth($color, 1)} .label { background-color: nth($color,2); }
+        &.#{nth($color, 1)} i { color: nth($color, 2); }
+      }
+    &.no-border a { border: 2px solid #fff; }
+    }
+
+    @include collapse-transition();
+    &.collapsed { @include navbar-collapsed; }
+
+    @media only screen and (max-width : 992px) {
+      @include navbar-collapsed;
+      &.collapsed { margin-left: 0; }
+    }
+  }
+
+  .search-form {
+    padding-left: 0;
+    margin-top: 6px;
+    .search-box {
+      width: 250px !important;
+      padding-left: 0;
+      border: none;
+      box-shadow:none !important;
+    }
+    button[type=submit] {
+      border: none;
+      //border-top: solid 1px #ddd;
+      //border-right: solid 2px #ddd;
+    }
+  }
+}
+
+.wrapper {
+  width: 100%;
+}
+
+@mixin left-side-collapsed {
+  width: $left-pane-collapsed;
+  .sidebar-menu > li > a > span {
+    display: none;
+  }
+}
+
+@mixin right-side-collapsed {
+  margin-left: $left-pane-collapsed;
+}
+
+.left-side, .right-side {
+  padding-top: 51px;
+  display: block;
+}
+
+.left-side {
+  position: fixed;
+  background: #333;
+  width: $left-pane;
+  box-shadow: inset 4px 0 0 0 #191919;
+  border-right: solid 5px #ccc;
+  min-height: 100%;
+
+  @include collapse-transition();
+  &.collapsed { @include left-side-collapsed; }
+
+  @media only screen and (max-width : 992px) {
+    @include left-side-collapsed;
+    &.collapsed {
+      margin-left: -$left-pane-collapsed
+    }
+  }
+}
+
+.right-side {
+  margin-left: $left-pane;
+
+  @include collapse-transition();
+  &.collapsed { @include right-side-collapsed; }
+
+  @media only screen and (max-width : 992px) {
+    @include right-side-collapsed;
+    &.collapsed {
+      margin-left: 0;
+    }
+  }
+}
+
+.sidebar-menu {
+  a {
+    font-size: 14px;
+    color: #bdcfe0;
+  }
+  list-style: none;
+  margin: 0; padding: 0;
+  > li {
+    margin: 0; padding: 0;
+//    border-bottom: 1px solid rgba(255,255,255,.05);
+    > a {
+      text-transform: uppercase;
+      padding: 13px 15px;
+      display: block;
+
+      > i { width: 20px;
+        @media only screen and (max-width : 992px) {
+          @include collapse-transition;
+          font-size: 18px;
+        }
+      }
+    }
+    &.active > a, &:hover > a {
+      color: #f6f6f6;
+      background: rgba(0,0,0,0.1);
+    }
+    &.active > a { box-shadow: inset 4px 0 0 0 $lime; }
+  }
+}

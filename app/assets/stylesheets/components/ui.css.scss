@@ -1,0 +1,53 @@
+$inplace-sizes: "tiny" 8, "small" 10, "large" 18, "huge" 24, "1x" 12, "2x" 16, "3x" 20, "4x" 24, "5x" 32;
+
+input[type=text].inplace-edit {
+  border: none;
+
+  @each $size in $inplace-sizes {
+    &.font-#{nth($size, 1)} {
+      font-size: #{nth($size, 2)}px;
+    }
+  }
+}
+
+.editable-wrap {
+  .form-control {
+    font-size: 16px;
+//    padding: 0 12px 6px 12px;
+  }
+}
+
+.editable-left-commands {
+  float: left;
+  margin-right: 5px;
+}
+
+.btn, button, input[type=button] {
+  @each $color in $colors {
+    &.#{nth($color, 1)} {
+      background-color: nth($color, 2);
+      border-color: darken(nth($color, 2), 3);
+      @if lightness(nth($color, 2)) > 80 { color: #333; } @else { color: #fff; }
+
+      &:hover {
+        background-color: darken(nth($color, 2), 5);
+        border-color: darken(nth($color, 2), 10);
+      }
+    }
+  }
+}
+
+.btn-labeled {
+  padding: 0 12px;
+  .btn-label {
+    position: relative;
+    left: -14px;
+    display: inline-block;
+    padding: 6px 12px;
+    background: rgba(0,0,0,0.15);
+    border-radius: 3px 0 0 3px;
+  }
+}
+
+.right-float { float: right; }
+.left-float { float: left; }
