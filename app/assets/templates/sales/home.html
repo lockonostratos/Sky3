@@ -1,0 +1,147 @@
+<tabset>
+    <tab ng-repeat="temp in salesCtrl.tempOrderTabs" active="temp.active" select="salesCtrl.select_order(temp)">
+        <tab-heading>
+            {{temp.name}} <i class="glyphicon glyphicon-bell"></i>
+        </tab-heading>
+        <div class="row no-margin">
+            <div class="col-lg-2">
+                <select ng-model="salesCtrl.currentAccount" ng-options="sale.email for sale in salesCtrl.sales_accounts"
+                        ng-change="salesCtrl.changeCurrentOrderOwnerId()"></select>
+            </div>
+            <div class="col-lg-3">
+                <input type="text" ng-model="currentLabel" typeahead="ps.fullSearch for ps in salesCtrl.product_summaries | filter:$viewValue | limitTo:8"
+                       typeahead-on-select="salesCtrl.resetCurrentOrderDetail($item, $model, $label)" />
+                <input ng-model="currentProduct" type="button" value="Thêm(next)"
+                       ng-click="salesCtrl.addNewOrderDetail(salesCtrl.currentOrderDetail)" ng-disabled="salesCtrl.currentProduct == null"/>
+            </div>
+            <div class="col-lg-6">
+                <input ng-model="salesCtrl.currentOrderDetail.quality" type="number" min="0" ng-disabled="salesCtrl.currentProduct == null"
+                       ng-change="salesCtrl.changeCurrentOrderDetailQuality(salesCtrl.currentOrderDetail)">
+                <input ng-disabled="true" value='{{salesCtrl.currentProduct.name}} - {{salesCtrl.currentProduct.productCode}}'>
+                <input ng-disabled="true" value='SL:{{salesCtrl.currentProduct.quality}} - {{salesCtrl.currentProduct.price | currency}}'>
+
+            </div>
+            <div class="col-lg-2">
+            </div>
+        </div>
+        <div class="row no-margin">
+            <div class="col-lg-2">
+                <select ng-model="salesCtrl.currentCustomer" ng-change="salesCtrl.change_currentCustomer(currentCustomer)"
+                        ng-options="currentCustomer.name for currentCustomer in salesCtrl.customers"></select>
+                <input ng-model="salesCtrl.currentProduct" type="button" value="Thêm" ng-click="salesCtrl.addNewTab()">
+                <input ng-model="salesCtrl.currentProduct" type="button" value="Xóa" ng-click="salesCtrl.removeTab()">
+                <input ng-model="salesCtrl.currentProduct" type="button" value="Log" ng-click="salesCtrl.logName()">
+            </div>
+            <div class="col-lg-10">
+                GiảmGiá%
+                <input ng-model="salesCtrl.currentOrderDetail.discount_percent" type="number" step="5"
+                       ng-disabled="salesCtrl.currentProduct == null"
+                       ng-change="salesCtrl.change_tempOrderDetail_discount_percent(salesCtrl.currentOrderDetail)">
+                Tiền Mặt
+                <input ng-model="salesCtrl.currentOrderDetail.discount_cash" min="0" type="number" step="100"
+                       ng-disabled="salesCtrl.currentProduct == null"
+                       ng-change="salesCtrl.change_tempOrderDetail_discount_cash(salesCtrl.currentOrderDetail)">
+                Tạm Tính
+                <input ng-model="salesCtrl.currentOrderDetail.total_price" type="number" ng-disabled="true">
+                Tổng Tiền
+                <input ng-model="salesCtrl.currentOrderDetail.total_amount" type="number" ng-disabled="true">
+            </div>
+        </div>
+        <div class="row no-margin">
+            <table class="table table-condensed table-hover">
+                <thead>
+                <th>BarCode</th>
+                <th>Skull</th>
+                <th>Giá</th>
+                <th>Số Lượng Mua</th>
+                <th>Giảm Giá %</th>
+                <th>Giảm Giá Tiền Mặt</th>
+                <th>Tổng Tiền</th>
+
+                </thead>
+                <tr ng-repeat="item in salesCtrl.tempOrderDetails | orderBy:'price'">
+                    <td>{{item.productCode}}</td>
+                    <td>{{item.skullId}}</td>
+                    <td>{{item.price}}</td>
+                    <td>{{item.quality}}</td>
+                    <td>{{item.discountPercent}}</td>
+                    <td>{{item.discountCash}}</td>
+                    <td>{{item.totalAmount}}</td>
+                    <td><input type="button" value="X" ng-click="salesCtrl.removeOrderDetail(item, $index)"></td>
+                </tr>
+            </table>
+        </div>
+        <br/>
+        <div class="row no-margin">
+            <div class="col-lg-2">
+                Phương Thức VC:
+                <select ng-model="salesCtrl.delivery"
+                        ng-init="salesCtrl.delivery = salesCtrl.delivery || salesCtrl.transports[0]"
+                        ng-change="salesCtrl.change_current_delivery(delivery)"
+                        ng-options="delivery.name for delivery in salesCtrl.transports">
+                </select>
+            </div>
+            <div class="col-lg-3">
+                Giảm Giá Voucher <input ng-model="salesCtrl.tempOrder.discountVoucher" ng-disabled="salesCtrl.change_bill_discount()"
+                                        ng-change="salesCtrl.change_tempOrder_discountVoucher(tempOrder.discountVoucher)"/>
+
+            </div>
+
+            <div class="col-lg-2">
+                Tiền Thu Vào
+                <input numbers-only ng-model="salesCtrl.tempOrder.payment"
+                       ng-disabled="salesCtrl.tempOrderDetails[0] == null">
+            </div>
+            <div class="col-lg-2">
+                Tiền Thối Lại <input ng-model="salesCtrl.tempOrder.money_balance"
+                                     ng-disabled="true"/>
+            </div>
+            <div class="col-lg-2">
+                Tạm Tính <input ng-model="salesCtrl.tempOrder.totalPrice" ng-disabled="true"/>
+            </div>
+        </div>
+        <div class="row no-margin">
+            <div class="col-lg-2">
+                Cách Thanh Toán:
+                <select ng-model="salesCtrl.payment_method" ng-init="salesCtrl.payment_method = salesCtrl.payment_method || salesCtrl.payment_methods[0]"
+                        ng-change="salesCtrl.change_current_payment_method(salesCtrl.payment_method)"
+                        ng-options="payment_method.name for payment_method in salesCtrl.payment_methods">
+                </select>
+            </div>
+            <div class="col-lg-3">
+                Giảm Giá Tiền Theo Tổng Bill :
+                <input type="checkbox" ng-model="salesCtrl.tempOrder.billDiscount" ng-disabled="salesCtrl.tempOrderDetails[0] == null"
+                       ng-change="salesCtrl.change_cheked_bill(salesCtrl.tempOrder.billDiscount)"/>
+                <input ng-model="salesCtrl.productList" type="button" value="Cập Nhật" ng-disabled="salesCtrl.tempOrderDetails[0] == null" ng-click="salesCtrl.reupdate_order()"/>
+                <input ng-model="salesCtrl.productList" type="button" value="Hoàn Tất" ng-disabled="salesCtrl.tempOrderDetails[0] == null" />
+
+            </div>
+            <div class="col-lg-2">
+                Giảm Giá %<input ng-model="salesCtrl.tempOrder.discountPercent" type="number" ng-disabled="!salesCtrl.tempOrder.billDiscount"
+                                 ng-change="salesCtrl.change_tempOrder_discount_percent(tempOrder)"/>
+            </div>
+            <div class="col-lg-2">
+                Giảm Giá TM <input ng-model="salesCtrl.tempOrder.discountCash" type="number" ng-disabled="!salesCtrl.tempOrder.billDiscount"
+                                   ng-change="salesCtrl.change_tempOrder_discount_cash(tempOrder)"/>
+            </div>
+            <div class="col-lg-2">
+                Tổng Tiền <input ng-model="salesCtrl.tempOrder.finalPrice" ng-disabled="true"/>
+            </div>
+        </div>
+
+        <br>
+        <br>
+
+        {{tempOrder}}
+        {{currentCustomer}}
+
+
+    </tab>
+
+</tabset>
+
+
+
+
+
+

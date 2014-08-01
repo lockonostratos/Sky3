@@ -1,0 +1,33 @@
+<form class="well well-sm" editable-form name="importHeaders"  onaftersave="importCtrl.saveImportHeaders()">
+  <button type="button" class="lime btn btn-labeled" ng-click="importHeaders.$show()" ng-show="!importHeaders.$visible">
+    <span class="btn-label">
+      <i class="fa fa-pencil"></i>
+    </span>Chỉnh sửa
+  </button>
+
+  <h3 editable-text="currentImport.name" e-class="test-class" e-placeholder="lý do nhập kho?">
+    {{currentImport.name || 'lý do nhập kho?'}}
+  </h3>
+
+  <h5 editable-text="currentImport.description" e-style="width: 350px" e-placeholder="ghi chú thêm?">
+    {{currentImport.description || "ghi chú thêm?"}}
+  </h5>
+
+  <span class="editable-left-commands" ng-show="importHeaders.$visible">
+    <button type="button" class="btn btn-labeled btn-danger" ng-disabled="importHeaders.$waiting" ng-click="importHeaders.$cancel()">
+      <span class="btn-label">
+        <i class="glyphicon glyphicon-remove"></i>
+      </span>Dừng
+    </button>
+    <button class="lime btn btn-labeled" ng-disabled="importHeaders.$waiting">
+      <span class="btn-label">
+        <i class="glyphicon glyphicon-ok"></i>
+      </span>Lưu
+    </button>
+  </span>
+
+  <h6 class="color-asbestos" ng-show="!importHeaders.$visible">{{importCtrl.currentImport.createdAt | fromNow}}</h6>
+</form>
+
+<div dx-data-grid="importCtrl.dataGridOptions"></div>
+{{importCtrl.dataGridOptions}}
