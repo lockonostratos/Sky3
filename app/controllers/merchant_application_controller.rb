@@ -1,6 +1,6 @@
 class MerchantApplicationController < ApplicationController
   def current_merchant_account
-    @current_merchant_account ||= @current_account.find_merchant_account if @current_account
+    @current_merchant_account ||= @current_account.merchant_account if @current_account
   end
 
   helper_method :current_merchant_account, :get_all_customers

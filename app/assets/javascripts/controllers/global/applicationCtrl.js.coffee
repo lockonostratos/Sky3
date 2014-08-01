@@ -1,6 +1,6 @@
-Sky.controller 'applicationCtrl', ['$routeParams', '$location', '$scope', 'Common', 'MerchantAccount'
-($routeParams, $location, $scope, Common, MerchantAccount) ->
-  MerchantAccount.get('current_user').then (data) -> Common.currentMerchantAccount = data
+Sky.controller 'applicationCtrl', ['$routeParams', '$location', '$scope', 'Common', 'Session', 'MerchantAccount'
+($routeParams, $location, $scope, Common, Session, MerchantAccount) ->
+  Session.get('current_merchant_user').then (data) -> Common.currentMerchantAccount = data
   @Common = Common
 
   @showMenu = true

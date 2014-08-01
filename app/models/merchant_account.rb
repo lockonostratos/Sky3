@@ -10,11 +10,13 @@ class MerchantAccount < ActiveRecord::Base
   has_many :merchant_areas
   has_many :product_summaries
   has_many :temp_import_details
-  has_many :roles, class_name: 'MerchantAccountRole', foreign_key: 'merchant_account_id'
   has_many :temp_products
   belongs_to :account
   belongs_to :merchant
   belongs_to :branch
+
+  has_many :roles, class_name: 'MerchantAccountRole', foreign_key: 'merchant_account_id'
+  belongs_to :warehouse, class_name: :Warehouse, foreign_key: 'current_warehouse_id'
 
 
   before_save :add_merchant_account

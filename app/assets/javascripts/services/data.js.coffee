@@ -8,6 +8,18 @@
 #    'update': { method: 'PUT' }
 #    'destroy': { method: 'DELETE' }
 
+Sky.factory 'Session', [ 'railsResourceFactory', (railsResourceFactory) ->
+  railsResourceFactory { url: 'api/sessions', name: 'session' }
+]
+
+Sky.factory 'Account', [ 'railsResourceFactory', (railsResourceFactory) ->
+  railsResourceFactory { url: 'api/orders', name: 'account' }
+]
+
+Sky.factory 'MerchantAccount', [ 'railsResourceFactory', (railsResourceFactory) ->
+  railsResourceFactory { url: 'api/merchant_accounts', name: 'merchantAccounts' }
+]
+
 Sky.factory 'Product', [ 'railsResourceFactory', (railsResourceFactory) ->
   railsResourceFactory { url: 'api/products', name: 'product' }
 ]
@@ -18,14 +30,6 @@ Sky.factory 'ProductSummary', [ 'railsResourceFactory', (railsResourceFactory) -
 
 Sky.factory 'Order', [ 'railsResourceFactory', (railsResourceFactory) ->
   railsResourceFactory { url: 'api/orders', name: 'order' }
-]
-
-Sky.factory 'Account', [ 'railsResourceFactory', (railsResourceFactory) ->
-  railsResourceFactory { url: 'api/orders', name: 'account' }
-]
-
-Sky.factory 'MerchantAccount', [ 'railsResourceFactory', (railsResourceFactory) ->
-  railsResourceFactory { url: 'api/merchant_accounts', name: 'merchantAccounts' }
 ]
 
 Sky.factory 'Customer', [ 'railsResourceFactory', (railsResourceFactory) ->

@@ -45,13 +45,14 @@ tehao = Account.create({parent_id: son.id, extension: :merchant, display_name: '
 #Tạo chi nhánh mới
 dongthap = Branch.create({name: 'HỒ CHÍ MINH', merchant_id: loc.headquater})
 
-khoHcm = Warehouse.find(loc.find_merchant_account.current_warehouse_id)
+khoHcm = Warehouse.find(loc.merchant_account.current_warehouse_id)
 khoDongThap = Warehouse.find_by_branch_id(dongthap.id)
 
-tai_mer_acc = tai.find_merchant_account
-loc_mer_acc = loc.find_merchant_account
-son_mer_acc = son.find_merchant_account
-tehao_mer_acc = tehao.find_merchant_account
+tai_mer_acc = tai.merchant_account
+loc_mer_acc = loc.merchant_account
+son_mer_acc = son.merchant_account
+tehao_mer_acc = tehao.merchant_account
+
 #Gán quyền
 loc_mer_acc.add_role_by_name("Bán Hàng")
 loc_mer_acc.add_role_by_name("Quản Lý")

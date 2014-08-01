@@ -1,6 +1,11 @@
 # encoding: UTF-8
 
 class Account < ActiveRecord::Base
+  has_one :merchant_account
+  belongs_to :parent, class_name: :Account, foreign_key: :parent_id
+  has_many :childs, class_name: :Account, foreign_key: :parent_id
+
+
   before_create { generate_auth_token(:auth_token) }
   after_create :create_extention_account
 
@@ -8,19 +13,7 @@ class Account < ActiveRecord::Base
   enum extension: [:gera, :gera_customer, :agency, :agency_customer, :merchant, :merchant_customer]
   enum status: [:activated, :activating, :locked]
 
-  def find_parent_account
-    Account.find (self.parent_id)
-  end
-
-  def find_merchant_account
-    MerchantAccount.find_by_account_id (self.id)
-  end
-
-  def find_merchant_account_by (id)
-    MerchantAccount.find_by_account_id (id)
-  end
-
-  def find_parent_merchant_account
+  def parent_merchant_account
     MerchantAccount.find_by_account_id (self.parent_id)
   end
 
@@ -37,7 +30,7 @@ class Account < ActiveRecord::Base
     elsif self.agency?
       AgencyAccount.create! ({account_id: self.id})
     elsif self.merchant?
-      if merchant_existed?
+      if merchant_exist?
         create_merchant_account_only
       else
         create_merchant_and_defaults
@@ -49,7 +42,7 @@ class Account < ActiveRecord::Base
   end
 
   def create_merchant_account_only
-    parent_merchant_account = self.find_parent_merchant_account
+    parent_merchant_account = self.parent_merchant_account
     self.update({headquater: parent_merchant_account.merchant_id})
     MerchantAccount.create! ({account_id: self.id,
                               merchant_id: parent_merchant_account.merchant_id,
@@ -69,7 +62,7 @@ class Account < ActiveRecord::Base
                               current_warehouse_id: new_warehouse.id})
   end
 
-  def merchant_existed?
+  def merchant_exist?
     self.parent_id != 0
   end
 end
