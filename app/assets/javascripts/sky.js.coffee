@@ -1,4 +1,5 @@
 #= require_self
+#= require sky.system
 #= require_tree ./controllers/global
 #= require_tree ./services
 #= require_tree ./filters
@@ -20,6 +21,10 @@ Sky.config ['$routeProvider', ($routeProvider) ->
       templateUrl: '../assets/sales/home.html'
       controller: 'salesCtrl'
       controllerAs: 'salesCtrl'
+    }).when('/sale', {
+      templateUrl: '../assets/sales/sale.html'
+      controller: 'saleCtrl'
+      controllerAs: 'saleCtrl'
     }).when('/post/:postId',  {
       templateUrl: '../assets/home/post.html'
       controller: 'Sky.postCtrl'

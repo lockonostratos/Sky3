@@ -1,0 +1,8 @@
+<select ng-model="saleCtrl.seller" ng-options="sale.email for sale in saleCtrl.saleAccounts"></select>
+<tabset>
+  <tab ng-repeat="tab in saleCtrl.tabHistories"  select="saleCtrl.selectTab(tab)">
+    <tab-heading>
+      {{tab.name}} <i class="glyphicon glyphicon-bell"></i>
+    </tab-heading>
+  </tab>
+</tabset>

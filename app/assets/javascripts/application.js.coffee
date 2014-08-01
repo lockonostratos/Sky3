@@ -10,5 +10,4 @@
 #= require xeditable
 #= require moment
 #= require dx.all
-
 #= require sky
