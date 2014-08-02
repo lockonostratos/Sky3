@@ -16,7 +16,7 @@ Rails.application.routes.draw do
 
     resources :merchant_accounts do
       collection do
-        get 'current_sales'
+        get 'sellers'
       end
     end
 

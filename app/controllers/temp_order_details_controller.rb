@@ -2,7 +2,7 @@ class TempOrderDetailsController < ApplicationController
   before_action :set_temp_order_detail, only: [:show, :edit, :update, :destroy]
 
   def index
-    @temp_order_details = TempOrderDetail.where(order_id: params[:order_id])
+    @temp_order_details = TempOrderDetail.where(temp_order_id: params[:temp_order_id])
   end
 
   def show

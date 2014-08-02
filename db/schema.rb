@@ -600,7 +600,7 @@ ActiveRecord::Schema.define(version: 20140711100003) do
   end
 
   create_table "temp_order_details", force: true do |t|
-    t.integer  "order_id",                                                   null: false
+    t.integer  "temp_order_id",                                              null: false
     t.integer  "product_summary_id",                                         null: false
     t.string   "product_code",                                               null: false
     t.integer  "skull_id",                                                   null: false
@@ -616,21 +616,22 @@ ActiveRecord::Schema.define(version: 20140711100003) do
   end
 
   create_table "temp_orders", force: true do |t|
-    t.integer  "branch_id",                                                    null: false
-    t.integer  "warehouse_id",                                                 null: false
-    t.integer  "merchant_account_id",                                          null: false
-    t.integer  "customer_id",                                                  null: false
+    t.integer  "branch_id",                                                 null: false
+    t.integer  "warehouse_id",                                              null: false
+    t.integer  "buyer_id",                                                  null: false
+    t.integer  "creator_id",                                                null: false
+    t.integer  "seller_id",                                                 null: false
     t.string   "name"
-    t.boolean  "return",                                       default: false, null: false
-    t.integer  "payment_method",                               default: 0,     null: false
-    t.boolean  "delivery",                                     default: false, null: false
-    t.boolean  "bill_discount",                                default: false, null: false
-    t.decimal  "total_price",         precision: 10, scale: 0, default: 0,     null: false
-    t.decimal  "discount_voucher",    precision: 10, scale: 0, default: 0,     null: false
-    t.decimal  "discount_cash",       precision: 10, scale: 0, default: 0,     null: false
-    t.decimal  "final_price",         precision: 10, scale: 0, default: 0,     null: false
-    t.decimal  "deposit",             precision: 10, scale: 0, default: 0,     null: false
-    t.decimal  "currency_debit",      precision: 10, scale: 0, default: 0,     null: false
+    t.boolean  "return",                                    default: false, null: false
+    t.integer  "payment_method",                            default: 0,     null: false
+    t.boolean  "delivery",                                  default: false, null: false
+    t.boolean  "bill_discount",                             default: false, null: false
+    t.decimal  "total_price",      precision: 10, scale: 0, default: 0,     null: false
+    t.decimal  "discount_voucher", precision: 10, scale: 0, default: 0,     null: false
+    t.decimal  "discount_cash",    precision: 10, scale: 0, default: 0,     null: false
+    t.decimal  "final_price",      precision: 10, scale: 0, default: 0,     null: false
+    t.decimal  "deposit",          precision: 10, scale: 0, default: 0,     null: false
+    t.decimal  "currency_debit",   precision: 10, scale: 0, default: 0,     null: false
     t.datetime "created_at"
     t.datetime "updated_at"
   end

@@ -7,28 +7,31 @@ Sky.controller 'saleCtrl', ['$routeParams','$http', 'Common', 'Product', 'Produc
   @payments = []; @payments.push obj for property, obj of Sky.Payments
 
   @seller = {}; @saleAccounts = []
-  MerchantAccount.get('current_sales').then (data) =>
+  MerchantAccount.get('sellers').then (data) =>
     @saleAccounts = data
     foundCurrent = data.find {accoundId: Common.currentMerchantAccount.account.id}
     @seller = foundCurrent ? @saleAccounts[0]
 
-  @customer = {}; @customers = []
-  Customer.query().then (data) => @customers = data; @customer = data[0]
+  @buyer = {}; @customers = []
+  Customer.query().then (data) => @customers = data; @buyer = data[0]
 
   @tabHistories = []; @currentTab = {}; @tabDetails = [];
   TempOrder.query().then (data) =>
     @tabHistories = data
     if @tabHistories.length is 0
       @addTab()
-    else
-      @selectTab @tabHistories[0]
-
+#    else
+#      @selectTab @tabHistories[0]
 
 #  ProductSummary.query().then (data) =>
 
+  # Bindable functions ----------------------------------------->
+  @syncCurrentTab = =>
+    @currentTab.buyerId = @buyer.id
+    @currentTab.sellerId = @seller.id
+    @currentTab.update()
 
-
-  #functions ---------------------------------------------
+  # Helper functions --------------------------------------------->
   @selectTab = (tab) =>
     @currentTab = tab
     @resetSellingProduct()
@@ -36,7 +39,7 @@ Sky.controller 'saleCtrl', ['$routeParams','$http', 'Common', 'Product', 'Produc
     @reloadTabDetails()
 
   @addTab = =>
-    newTab = @newEmptyTab Sky.Conversation.Call @customer.name, @customer.sex
+    newTab = @newEmptyTab (Sky.Conversation.Call @buyer.name, @buyer.sex)
     newTab.save().then (data) => @tabHistories.push data
 
   @deleteTab = =>
@@ -45,27 +48,27 @@ Sky.controller 'saleCtrl', ['$routeParams','$http', 'Common', 'Product', 'Produc
     @tabHistories.removeAt (@tabHistories.indexOf foundTab)
     @addTab() if tabHistories.length is 0
 
-  @newEmptyTab = (name, branch_id = null, warehouse_id = null, merchant_account_id = null, sales_account_id =null, customer_id = null) =>
+  @newEmptyTab = (name, branch_id = null, warehouse_id = null, creator_id = null, seller_id =null, buyer_id = null) =>
     newTab = new TempOrder({name: name})
     newTab.branch_id = branch_id ? Common.currentMerchantAccount.branch.id
     newTab.warehouse_id = warehouse_id ? Common.currentMerchantAccount.warehouse.id
-    newTab.merchant_account_id = merchant_account_id ? Common.currentMerchantAccount.account.id
-    newTab.sales_account_id = merchant_account_id ? Common.currentMerchantAccount.account.id
-    newTab.customer_id = customer_id ? @customer.id
+    newTab.creator_id = creator_id ? Common.currentMerchantAccount.account.id
+    newTab.seller_id = seller_id ? @seller.id
+    newTab.buyer_id = buyer_id ? @buyer.id
     newTab
 
-    @resetSellingProduct = =>
-      @sellingProduct = null
-      @sellingDetail = null
-      @searchText = null
+  @resetSellingProduct = =>
+    @sellingProduct = null
+    @sellingDetail = null
+    @searchText = null
 
-    @reloadSellerAndCustomer = =>
-      @seller = @saleAccounts.find { accoundId: @currentTab.salesAccountId }
-      @customer = @customers.find { id: @currentTab.customerId }
+  @reloadSellerAndCustomer = =>
+    @seller = @saleAccounts.find { id: @currentTab.sellerId }
+    @buyer = @customers.find { id: @currentTab.buyerId }
 
-    @reloadTabDetails = =>
-      @tabDetails = []
-      TempOrderDetail.query({order_id: @currentTab.id}).then (data) => @tabDetails = data
+  @reloadTabDetails = =>
+    @tabDetails = []
+    TempOrderDetail.query({temp_order_id: @currentTab.id}).then (data) => @tabDetails = data
 
   return
 ]

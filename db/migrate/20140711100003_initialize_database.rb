@@ -458,10 +458,12 @@ class InitializeDatabase < ActiveRecord::Migration
     create_table :temp_orders do |t|
       t.belongs_to :branch, :null => false                              #bán chi nhánh nào
       t.belongs_to :warehouse, :null => false                           #bán cửa hàng nào
-      t.belongs_to :merchant_account, :null => false                    #người bán
-      t.belongs_to :customer, :null => false                            #người mua
-      t.string :name                                                    #tên phiếu order(tính lại khi cập nhật)
 
+      t.integer :buyer_id, :null => false                               #Customer
+      t.integer :creator_id, :null => false                             #MerchantAccount
+      t.integer :seller_id, :null => false                              #MerchantAccount
+
+      t.string :name                                                    #tên phiếu order(tính lại khi cập nhật)
       t.boolean :return, :null => false, :default => false              #Id don tra hang (neu co)
       t.integer :payment_method, :null => false, :default => 0          #cách thanh toán (tiền mặt, nợ)
       t.boolean :delivery, :null => false, :default =>false             #phương thức vận chuyển(trực tiếp, giao hàng)
@@ -480,8 +482,9 @@ class InitializeDatabase < ActiveRecord::Migration
     end
     #Chi tiet don hang tạm ---------------------------------------->
     create_table :temp_order_details do |t|
-      t.belongs_to :order, :null => false
-      t.integer :product_summary_id, :null => false
+      t.belongs_to :temp_order, :null => false
+
+      t.belongs_to :product_summary, :null => false
       t.string :product_code, :null => false
       t.integer :skull_id, :null => false
       t.integer :warehouse_id, :null => false

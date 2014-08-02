@@ -1,7 +1,7 @@
 class MerchantAccountsController < MerchantApplicationController
   before_action :set_merchant_account, only: [:edit, :update, :destroy]
 
-  def current_sales
+  def sellers
     @sales = Merchant.find_branch_sales(current_merchant_account.branch_id)
   end
 

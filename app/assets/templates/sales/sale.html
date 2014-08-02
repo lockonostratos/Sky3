@@ -1,8 +1,21 @@
-<select ng-model="saleCtrl.seller" ng-options="sale.email for sale in saleCtrl.saleAccounts"></select>
+
 <tabset>
-  <tab ng-repeat="tab in saleCtrl.tabHistories"  select="saleCtrl.selectTab(tab)">
+  <tab ng-repeat="tab in saleCtrl.tabHistories" select="saleCtrl.selectTab(tab)">
     <tab-heading>
       {{tab.name}} <i class="glyphicon glyphicon-bell"></i>
     </tab-heading>
+    <select ng-model="saleCtrl.seller"
+            ng-options="sale.email for sale in saleCtrl.saleAccounts"
+            ng-change="saleCtrl.syncCurrentTab()"></select>
+
+    <div dx-select-box="{dataSource: saleCtrl.saleAccounts, displayExpr: 'email', valueExpr: 'id'}"></div>
+
+    <select ng-model="saleCtrl.buyer"
+            ng-options="buyer.name for buyer in saleCtrl.customers"
+            ng-change="saleCtrl.syncCurrentTab()"></select>
+    <input ng-model="salesCtrl.currentProduct" type="button" value="Thêm"
+           ng-click="salesCtrl.addNewTab()">
+    <input ng-model="salesCtrl.currentProduct" type="button" value="Xóa"
+           ng-click="salesCtrl.removeTab()">
   </tab>
 </tabset>

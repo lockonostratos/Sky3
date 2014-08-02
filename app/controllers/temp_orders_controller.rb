@@ -3,8 +3,8 @@ class TempOrdersController < MerchantApplicationController
 
   def index
     warehouse_id = if params[:warehouse_id] then params[:warehouse_id] else current_merchant_account.current_warehouse_id end
-    merchant_account_id = if params[:merchant_account_id] then params[:merchant_account_id] else current_merchant_account.account_id end
-    @temp_orders = TempOrder.where(warehouse_id: warehouse_id, merchant_account_id: merchant_account_id)
+    creator_id = if params[:creator_id] then params[:creator_id] else current_merchant_account.account_id end
+    @temp_orders = TempOrder.where(warehouse_id: warehouse_id, creator_id: creator_id)
   end
 
   def show
@@ -39,8 +39,6 @@ class TempOrdersController < MerchantApplicationController
     end
   end
 
-  # PATCH/PUT /temp_orders/1
-  # PATCH/PUT /temp_orders/1.json
   def update
     respond_to do |format|
       if @temp_order.update(temp_order_params)
@@ -71,6 +69,6 @@ class TempOrdersController < MerchantApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def temp_order_params
-      params.require(:temp_order).permit(:branch_id, :warehouse_id, :customer_id, :merchant_account_id, :name, :return, :payment_method, :delivery, :bill_discount, :total_price, :discount_voucher, :discount_cash, :final_price, :deposit, :currency_debit, :sales_account_id)
+      params.require(:temp_order).permit(:branch_id, :warehouse_id, :seller_id, :buyer_id, :creator_id, :name, :return, :payment_method, :delivery, :bill_discount, :total_price, :discount_voucher, :discount_cash, :final_price, :deposit, :currency_debit)
     end
 end
