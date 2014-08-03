@@ -26,10 +26,10 @@ Sky.controller 'saleCtrl', ['$routeParams','$http', 'Common', 'Product', 'Produc
 #  ProductSummary.query().then (data) =>
 
   # Bindable functions ----------------------------------------->
-  @syncCurrentTab = =>
-    @currentTab.buyerId = @buyer.id
-    @currentTab.sellerId = @seller.id
-    @currentTab.update()
+  @syncSeller = (model) => @currentTab.sellerId = model.id; @currentTab.update()
+  @syncBuyer = (model) => @currentTab.buyerId = model.id; @currentTab.update()
+
+  @skyChange = => console.log 'bing!'
 
   # Helper functions --------------------------------------------->
   @selectTab = (tab) =>

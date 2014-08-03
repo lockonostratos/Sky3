@@ -1,0 +1,13 @@
+<div class="btn-group" dropdown is-open="isOpen">
+
+    <button type="button" class="btn dropdown-toggle" ng-disabled="disabled" ng-class="colorClass"
+            style="{{sizeStyle}}">
+        {{model[caption]}}<span class="caret"></span>
+    </button>
+
+    <ul class="dropdown-menu" role="menu" style="{{sizeStyle}}">
+        <li ng-repeat="item in options">
+          <a href="" ng-click="selectItem(item)">{{item[caption]}}</a>
+        </li>
+    </ul>
+</div>

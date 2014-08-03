@@ -3,6 +3,7 @@
 #= require_tree ./controllers/global
 #= require_tree ./services
 #= require_tree ./filters
+#= require_tree ./directives/ui
 
 #= require_tree ./controllers/home
 #= require_tree ./controllers/sales
@@ -10,7 +11,7 @@
 
 moment.lang 'vi'
 
-window.Sky = angular.module 'Sky', ['ngRoute', 'rails', 'ui.bootstrap', 'ngAnimate', 'xeditable', 'dx']
+window.Sky = angular.module 'Sky', ['ngRoute', 'rails', 'ui.bootstrap', 'ngAnimate', 'xeditable', 'dx', 'ui.utils']
 
 Sky.config ['$routeProvider', ($routeProvider) ->
   $routeProvider

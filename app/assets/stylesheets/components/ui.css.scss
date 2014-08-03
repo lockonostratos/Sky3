@@ -22,7 +22,16 @@ input[type=text].inplace-edit {
   margin-right: 5px;
 }
 
-.btn, button, input[type=button] {
+.btn {
+  @include border-radius(0);
+  &.sky {
+    background-color: #fff;
+    border: 1px solid #c3c3c3;
+    &:hover {
+      background-color: #f0f0f0;
+    }
+  }
+
   @each $color in $colors {
     &.#{nth($color, 1)} {
       background-color: nth($color, 2);
@@ -35,17 +44,28 @@ input[type=text].inplace-edit {
       }
     }
   }
+
+  &.shadow {
+    box-shadow: 0 2px 0 rgba(0, 0, 0, 0.15);
+  }
 }
 
 .btn-labeled {
   padding: 0 12px;
   .btn-label {
     position: relative;
-    left: -14px;
     display: inline-block;
     padding: 6px 12px;
     background: rgba(0,0,0,0.15);
-    border-radius: 3px 0 0 3px;
+
+    &.left {
+      left: -14px;
+      border-radius: 3px 0 0 3px;
+    }
+    &.right {
+      right: -14px;
+      border-radius: 0 3px 3px 0;
+    }
   }
 }
 

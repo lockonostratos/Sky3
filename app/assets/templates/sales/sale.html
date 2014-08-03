@@ -1,21 +1,19 @@
-
 <tabset>
-  <tab ng-repeat="tab in saleCtrl.tabHistories" select="saleCtrl.selectTab(tab)">
+    <tab ng-repeat="tab in saleCtrl.tabHistories" select="saleCtrl.selectTab(tab)">
     <tab-heading>
       {{tab.name}} <i class="glyphicon glyphicon-bell"></i>
     </tab-heading>
-    <select ng-model="saleCtrl.seller"
-            ng-options="sale.email for sale in saleCtrl.saleAccounts"
-            ng-change="saleCtrl.syncCurrentTab()"></select>
 
-    <div dx-select-box="{dataSource: saleCtrl.saleAccounts, displayExpr: 'email', valueExpr: 'id'}"></div>
+    <sky-select options="saleCtrl.saleAccounts" model="saleCtrl.seller" color="pumpkin shadow"
+              caption="email" change="saleCtrl.syncSeller(model)"></sky-select>
+    <sky-select options="saleCtrl.customers" model="saleCtrl.buyer" color="wisteria shadow"
+              caption="name" change="saleCtrl.syncBuyer(model)" width="160px"></sky-select>
 
-    <select ng-model="saleCtrl.buyer"
-            ng-options="buyer.name for buyer in saleCtrl.customers"
-            ng-change="saleCtrl.syncCurrentTab()"></select>
-    <input ng-model="salesCtrl.currentProduct" type="button" value="Thêm"
-           ng-click="salesCtrl.addNewTab()">
-    <input ng-model="salesCtrl.currentProduct" type="button" value="Xóa"
-           ng-click="salesCtrl.removeTab()">
+    <input type="button" value="Thêm" ng-click="salesCtrl.addNewTab()">
+    <input type="button" value="Xóa" ng-click="salesCtrl.removeTab()">
+
+    <div dx-select-box="{dataSource: saleCtrl.saleAccounts, displayExpr: 'email', valueExpr: 'id', width: '100px', height: '30px'}"></div>
+    <sky-button color="lime shadow" caption="Cloud" icon="fa fa-pencil" right-icon="true"></sky-button>
+      {{saleCtrl.seller}}
   </tab>
 </tabset>

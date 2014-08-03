@@ -1,12 +1,14 @@
 @import "compass";
 @import "bootstrap-sprockets";
 @import "bootstrap";
+
 @import "font-awesome";
 @import "theme";
 @import "variables";
 @import "mixins";
-@import "components";
 @import "xeditable";
+
+@import "components";
 
 @import "dx.common";
 @import "dx.light";
