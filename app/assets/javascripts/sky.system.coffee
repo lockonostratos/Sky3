@@ -13,8 +13,8 @@ class Sky.Style
 
 #Enumerations--------------------->
 class Sky.Transports
-  @DIRECT:    { value: 0, display: 'trực tiếp'}
-  @DELIVERY:  { value: 1, display: 'giao hàng'}
+  @DIRECT:    { value: false, display: 'trực tiếp'}
+  @DELIVERY:  { value: true, display: 'giao hàng'}
 
 class Sky.Payments
   @CASH:      { value: 0, display: 'tiền mặt'}
