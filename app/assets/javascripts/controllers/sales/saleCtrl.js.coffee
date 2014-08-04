@@ -15,13 +15,20 @@ Sky.controller 'saleCtrl', ['$routeParams','$http', 'Common', 'Product', 'Produc
   @buyer = {}; @customers = []
   Customer.query().then (data) => @customers = data; @buyer = data[0]
 
-  @tabHistories = []; @currentTab = {}; @tabDetails = [];
+  @tabHistories = []; @currentTab = null; @tabDetails = [];
   TempOrder.query().then (data) =>
     @tabHistories = data
     if @tabHistories.length is 0
       @addTab()
-#    else
-#      @selectTab @tabHistories[0]
+    else
+      @selectTab @tabHistories[0]
+
+  @allProducts = [];
+  ProductSummary.query().then (data) =>
+    for product in data
+      product.caption = product.name
+      product.caption += " (#{product.skullId})" if product.skullId
+      @allProducts.push product
 
 #  ProductSummary.query().then (data) =>
 
@@ -39,14 +46,18 @@ Sky.controller 'saleCtrl', ['$routeParams','$http', 'Common', 'Product', 'Produc
     @reloadTabDetails()
 
   @addTab = =>
+    console.log 'creating..'
     newTab = @newEmptyTab (Sky.Conversation.Call @buyer.name, @buyer.sex)
     newTab.save().then (data) => @tabHistories.push data
 
-  @deleteTab = =>
-    foundTab = @tabHistories.find {id: @currentTab.id}
+  @deleteTab = (tab) =>
+    foundTab = @tabHistories.find {id: tab.id}
     foundTab.delete() if foundTab
-    @tabHistories.removeAt (@tabHistories.indexOf foundTab)
-    @addTab() if tabHistories.length is 0
+    currentIndex = @tabHistories.indexOf foundTab
+    @tabHistories.removeAt currentIndex
+    @currentTab = @tabHistories[currentIndex] ? @tabHistories[currentIndex - 1]
+    console.log @currentTab
+    @addTab() if @tabHistories.length is 0
 
   @newEmptyTab = (name, branch_id = null, warehouse_id = null, creator_id = null, seller_id =null, buyer_id = null) =>
     newTab = new TempOrder({name: name})

@@ -16,6 +16,9 @@ input[type=text].sky-control {
   color: #555555;
   background-color: white;
   border: 1px solid #d3d3d3;
+  &:focus {
+    border: 1px solid #c3c3c3;
+  }
 }
 
 .editable-wrap {
@@ -32,7 +35,13 @@ input[type=text].sky-control {
 
 .btn {
   @include border-radius(0);
+}
+
+.btn, .tab {
+  color: #fff;
+  a {color: #fff !important;}
   &.sky {
+    color: #333;
     background-color: #fff;
     border: 1px solid #c3c3c3;
     &:hover {
@@ -44,7 +53,11 @@ input[type=text].sky-control {
     &.#{nth($color, 1)} {
       background-color: nth($color, 2);
       border-color: darken(nth($color, 2), 3);
-      @if lightness(nth($color, 2)) > 80 { color: #333; } @else { color: #fff; }
+      @if lightness(nth($color, 2)) > 80 {
+        color: #333; a { color: #333; }
+      } @else {
+        color: #fff; a { color: #333; }
+      }
 
       &:hover {
         background-color: darken(nth($color, 2), 5);
@@ -66,11 +79,9 @@ input[type=text].sky-control {
 
     &.left {
       left: -14px;
-      border-radius: 3px 0 0 3px;
     }
     &.right {
-      right: -14px;
-      border-radius: 0 3px 3px 0;
+      right: -13px;
     }
   }
 }

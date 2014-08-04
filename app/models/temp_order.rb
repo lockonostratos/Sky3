@@ -45,7 +45,7 @@ class TempOrder < ActiveRecord::Base
   # end
 
   def destroy_all_order_details
-    order_details = TempOrderDetail.where(order_id: self.id)
+    order_details = TempOrderDetail.where(temp_order_id: self.id)
     order_details.each do |order_detail|
       order_detail.destroy()
     end

@@ -1,20 +1,25 @@
-<tabset>
-    <tab ng-repeat="tab in saleCtrl.tabHistories" select="saleCtrl.selectTab(tab)">
-    <tab-heading>
-      {{tab.name}} <i class="glyphicon glyphicon-bell"></i>
-    </tab-heading>
+<sky-tab model="saleCtrl.currentTab" options="saleCtrl.tabHistories" create="saleCtrl.addTab()" delete="saleCtrl.deleteTab(tab)"></sky-tab>
 
-    <sky-select options="saleCtrl.saleAccounts" model="saleCtrl.seller" color="pumpkin shadow"
-              caption="email" change="saleCtrl.syncSeller(model)"></sky-select>
-    <sky-select options="saleCtrl.customers" model="saleCtrl.buyer" color="wisteria shadow"
-              caption="name" change="saleCtrl.syncBuyer(model)" size="20"></sky-select>
-    <input type="text" class="sky-control shadow" width="200px"/>
-    <input type="button" value="Thêm" ng-click="salesCtrl.addNewTab()">
-    <input type="button" value="Xóa" ng-click="salesCtrl.removeTab()">
+<sky-select options="saleCtrl.saleAccounts" model="saleCtrl.seller" color="shadow"
+          caption="email" change="saleCtrl.syncSeller(model)"></sky-select>
+<sky-select options="saleCtrl.customers" model="saleCtrl.buyer" color="wisteria shadow"
+          caption="name" change="saleCtrl.syncBuyer(model)" size="20"></sky-select>
 
-    <div dx-select-box="{dataSource: saleCtrl.saleAccounts, displayExpr: 'email', valueExpr: 'id', width: '100px', height: '30px'}"></div>
-    <sky-button color="lime shadow" caption="Cloud" icon="fa fa-pencil" right-icon="true"></sky-button>
-    <div dx-text-box="{value: 'text'}"></div>
-      {{saleCtrl.seller}}
-  </tab>
-</tabset>
+<input type="text" class="sky-control shadow sale-typeahead" width="200px" ng-model="saleCtrl.searchText"
+       typeahead="product.caption for product in saleCtrl.allProducts | filter:$viewValue | limitTo:8"/>
+
+<input type="button" value="Thêm" ng-click="salesCtrl.addNewTab()">
+<input type="button" value="Xóa" ng-click="salesCtrl.removeTab()">
+
+<div dx-select-box="{dataSource: saleCtrl.saleAccounts, displayExpr: 'email', valueExpr: 'id', width: '100px', height: '30px'}"></div>
+<sky-button color="lime shadow" caption="Cloud" icon="fa fa-pencil" right-icon="true"></sky-button>
+<div dx-text-box="{value: 'text'}"></div>
+
+
+<br/>
+<sky-button caption="Caption only" color="lime shadow"></sky-button>
+<sky-button caption="Caption & icon" icon="fa fa-pencil" color="amethyst shadow"></sky-button>
+<sky-button caption="Caption & rIcon" icon="fa fa-pencil" right-icon="true" color="yellow shadow"></sky-button>
+<input type="text" class="sky-control shadow" ng-model="saleCtrl.seller.email"/>
+<sky-select options="saleCtrl.saleAccounts" model="saleCtrl.seller" color="pumpkin shadow" width="100px"
+            caption="email" change="saleCtrl.syncSeller(model)"></sky-select>

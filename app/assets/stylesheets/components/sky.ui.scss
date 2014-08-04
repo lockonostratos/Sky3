@@ -32,7 +32,7 @@ sky-select {
          border-bottom: solid 1px #d3d3d3;
          overflow: hidden;
          text-overflow: ellipsis;
-         padding: 3px 12px 3px 12px;
+         padding: 3px 15px;
        }
        &:last-child a {
          border-bottom: none;
@@ -43,4 +43,61 @@ sky-select {
      }
    }
  }
+}
+
+sky-tab {
+  ul {
+    margin: 0; padding: 0;
+    li {
+      background-color: #e2e2e2;
+      max-width: 150px;
+      display: inline-block;
+      position: relative;
+      border: solid 1px #c3c3c3;
+      border-left: none;
+      &:first-child { border-left: solid 1px #d3d3d3; }
+      &.active {
+        background-color: #fff;
+        border-bottom: none;
+        border-top: solid 1px #c3c3c3;
+      }
+      &:hover { background-color: #e6e6e6; }
+      a {
+        padding: 8px 35px 5px 12px;
+        display: block;
+        color: #333333;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        &:focus { outline-style: none; -moz-outline-style:none; }
+      }
+      span {
+        position: absolute !important;
+        margin: 0 12px;
+        padding: 1px 2px 2px 2px;
+        right: 0; top: 9px;
+        cursor: pointer;
+        color: #ccc;
+        &:hover {
+          color: #fff;
+          @include border-radius(1px);
+          background-color: $pumpkin;
+        }
+      }
+    }
+    .new-button {
+      background-color: #fff;
+      border: solid 1px #d8d8d8;
+      border-left: none;
+      margin-left: -3px;
+      a { padding: 8px 22px 5px 12px; }
+      &:hover {
+        background: rgba(255,255,255,0.2);
+        span {
+          color: #333;
+          background-color: transparent;
+        }
+      }
+    }
+  }
 }

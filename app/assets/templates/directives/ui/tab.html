@@ -1,0 +1,10 @@
+<ul class="sky-tab">
+  <li ng-repeat="tab in options" ng-class="{active: tab == model}" ng-click="selectTab(tab)">
+    <a href="">{{tab[caption || 'name']}}</a>
+    <span class="fa fa-times" ng-dblclick="delete({tab: tab})"></span>
+  </li>
+  <li class="new-button" ng-click="create()">
+    <a href="">&nbsp;</a>
+    <span class="fa fa-plus"></span>
+  </li>
+</ul>
