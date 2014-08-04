@@ -2,9 +2,9 @@
          delete="saleCtrl.deleteTab(tab)" change="saleCtrl.selectTab(tab)"></sky-tab>
 
 <sky-select options="saleCtrl.saleAccounts" model="saleCtrl.seller" color="shadow"
-          caption="email" change="saleCtrl.syncSeller(model)"></sky-select>
+            caption="email" change="saleCtrl.syncSeller(model)"></sky-select>
 <sky-select options="saleCtrl.customers" model="saleCtrl.buyer" color="wisteria shadow"
-          caption="name" change="saleCtrl.syncBuyer(model)" size="20"></sky-select>
+            caption="name" change="saleCtrl.syncBuyer(model)" size="20"></sky-select>
 
 <input type="text" class="sky-control shadow sale-typeahead" width="200px" ng-model="saleCtrl.searchText"
        typeahead="product.caption for product in saleCtrl.allProducts | filter:$viewValue | limitTo:8"/>
