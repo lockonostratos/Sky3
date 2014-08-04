@@ -17,4 +17,4 @@ Sky.directive 'skyTab', ->
       $scope.selectTab = (item) ->
         if $scope.model != item
           $scope.model = item
-          $scope.change({model: item})
+          $scope.change({tab: item})

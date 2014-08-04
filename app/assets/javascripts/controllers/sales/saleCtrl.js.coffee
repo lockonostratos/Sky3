@@ -40,6 +40,7 @@ Sky.controller 'saleCtrl', ['$routeParams','$http', 'Common', 'Product', 'Produc
 
   # Helper functions --------------------------------------------->
   @selectTab = (tab) =>
+    console.log tab
     @currentTab = tab
     @resetSellingProduct()
     @reloadSellerAndCustomer()

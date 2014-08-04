@@ -1,4 +1,5 @@
-<sky-tab model="saleCtrl.currentTab" options="saleCtrl.tabHistories" create="saleCtrl.addTab()" delete="saleCtrl.deleteTab(tab)"></sky-tab>
+<sky-tab model="saleCtrl.currentTab" options="saleCtrl.tabHistories" create="saleCtrl.addTab()"
+         delete="saleCtrl.deleteTab(tab)" change="saleCtrl.selectTab(tab)"></sky-tab>
 
 <sky-select options="saleCtrl.saleAccounts" model="saleCtrl.seller" color="shadow"
           caption="email" change="saleCtrl.syncSeller(model)"></sky-select>
