@@ -10,6 +10,14 @@ input[type=text].inplace-edit {
   }
 }
 
+input[type=text].sky-control {
+  padding: 6px 12px;
+  font-size: 14px;
+  color: #555555;
+  background-color: white;
+  border: 1px solid #d3d3d3;
+}
+
 .editable-wrap {
   .form-control {
     font-size: 16px;
@@ -44,11 +52,9 @@ input[type=text].inplace-edit {
       }
     }
   }
-
-  &.shadow {
-    box-shadow: 0 2px 0 rgba(0, 0, 0, 0.15);
-  }
 }
+
+.shadow { box-shadow: 0 2px 0 rgba(0, 0, 0, 0.15); }
 
 .btn-labeled {
   padding: 0 12px;

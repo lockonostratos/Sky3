@@ -7,13 +7,14 @@
     <sky-select options="saleCtrl.saleAccounts" model="saleCtrl.seller" color="pumpkin shadow"
               caption="email" change="saleCtrl.syncSeller(model)"></sky-select>
     <sky-select options="saleCtrl.customers" model="saleCtrl.buyer" color="wisteria shadow"
-              caption="name" change="saleCtrl.syncBuyer(model)" width="160px"></sky-select>
-
+              caption="name" change="saleCtrl.syncBuyer(model)" size="20"></sky-select>
+    <input type="text" class="sky-control shadow" width="200px"/>
     <input type="button" value="Thêm" ng-click="salesCtrl.addNewTab()">
     <input type="button" value="Xóa" ng-click="salesCtrl.removeTab()">
 
     <div dx-select-box="{dataSource: saleCtrl.saleAccounts, displayExpr: 'email', valueExpr: 'id', width: '100px', height: '30px'}"></div>
     <sky-button color="lime shadow" caption="Cloud" icon="fa fa-pencil" right-icon="true"></sky-button>
+    <div dx-text-box="{value: 'text'}"></div>
       {{saleCtrl.seller}}
   </tab>
 </tabset>
