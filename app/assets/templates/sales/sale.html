@@ -6,7 +6,7 @@
                 caption="email" change="saleCtrl.syncSeller(model)"></sky-select>
     <sky-select options="saleCtrl.customers" model="saleCtrl.buyer" color="wisteria shadow"
                 caption="name" change="saleCtrl.syncBuyer(model)" size="20"></sky-select>
-    <input type="text" ng-model="saleCtrl.searchText" class="sky-control shadow"
+    <input type="text" ng-model="saleCtrl.searchText" class="sky-control shadow" focusable="searchBox"
            typeahead="product.caption for product in saleCtrl.allProducts | filter:$viewValue | limitTo:8"
            typeahead-on-select="saleCtrl.productFoundAction($item)" />
     <sky-button color="lime shadow" caption="Thêm Sản Phẩm" ng-click="saleCtrl.addOrderDetail()"></sky-button>
@@ -102,10 +102,3 @@
 
     {{saleCtrl.change_bill_discount}}
 </div>
-
-<div>
-  <input type='text' ng-focus="cb" />
-  <input type='checkbox' ng-model="cb" />
-  {{cb == true}}
-</div>
-

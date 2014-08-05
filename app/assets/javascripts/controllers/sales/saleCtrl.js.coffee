@@ -1,5 +1,5 @@
-Sky.controller 'saleCtrl', ['$routeParams','$http', 'Common', 'Product', 'ProductSummary', 'Customer', 'MerchantAccount', 'TempOrder', 'TempOrderDetail'
-($routeParams, $http, Common, Product, ProductSummary, Customer, MerchantAccount, TempOrder, TempOrderDetail) ->
+Sky.controller 'saleCtrl', ['focus', '$routeParams','$http', 'Common', 'Product', 'ProductSummary', 'Customer', 'MerchantAccount', 'TempOrder', 'TempOrderDetail'
+(focus, $routeParams, $http, Common, Product, ProductSummary, Customer, MerchantAccount, TempOrder, TempOrderDetail) ->
   Common.caption = 'bán hàng';
 
   @focusSearchBox = true;
@@ -66,10 +66,9 @@ Sky.controller 'saleCtrl', ['$routeParams','$http', 'Common', 'Product', 'Produc
         if foundOrderDetail then @reloadOrderDetailOf foundOrderDetail, data
         else @tabDetails.push data
         @searchText = ''
-
+        focus 'searchBox'
         @updateSummaries()
 
-  @logger = => @focusSearchBox = true; console.log 'loggn'
   # Tab helpers ---------------------------------------------------------------------------------------------->
   @saveCurrentTabOfflineData = =>
     @currentTab.searchText = @searchText

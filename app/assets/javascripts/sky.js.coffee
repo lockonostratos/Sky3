@@ -9,6 +9,8 @@
 #= require_tree ./controllers/sales
 #= require_tree ./controllers/warehouse
 
+# require ng-focus-on
+
 moment.lang 'vi'
 
 window.Sky = angular.module 'Sky', ['ngRoute', 'rails', 'ui.bootstrap', 'ngAnimate', 'xeditable', 'dx', 'ui.utils']
