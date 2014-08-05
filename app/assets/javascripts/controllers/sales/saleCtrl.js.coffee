@@ -2,9 +2,9 @@ Sky.controller 'saleCtrl', ['$routeParams','$http', 'Common', 'Product', 'Produc
 ($routeParams, $http, Common, Product, ProductSummary, Customer, MerchantAccount, TempOrder, TempOrderDetail) ->
   Common.caption = 'bán hàng';
 
-  @Common = Common
-  @transports = []; @transport={}; @transports.push obj for property, obj of Sky.Transports
-  @payments = []; @payment={}; @payments.push obj for property, obj of Sky.Payments
+  @focusSearchBox = true;
+  @transports = []; @transport={}; @transports.push obj for property, obj of Sky.Transports; @transport = @transports[0]
+  @payments = []; @payment={}; @payments.push obj for property, obj of Sky.Payments; @payment = @payments[0]
 
   @seller = {}; @saleAccounts = []
   MerchantAccount.get('sellers').then (data) =>
@@ -23,66 +23,66 @@ Sky.controller 'saleCtrl', ['$routeParams','$http', 'Common', 'Product', 'Produc
     else
       @selectTab @tabHistories[0]
 
-  @productSummaries = []
-  ProductSummary.query().then (data) =>
-    for item in data
-      item.fullSearch = item.name
-      item.fullSearch += ' (' + item.skullId + ')' if item.skullId
-      @productSummaries.push item
-
-  @allProducts = [];
+  @allProducts = []
   ProductSummary.query().then (data) =>
     for product in data
       product.caption = product.name
       product.caption += " (#{product.skullId})" if product.skullId
       @allProducts.push product
 
-#  ProductSummary.query().then (data) =>
-  @resetCurrentOrderDetail = ($item, $model, $label) =>
-    @currentOrderDetail = new TempOrderDetail()
-    ProductSummary.get($item.id).then (data) =>
-      @currentProduct = data
-      @currentProduct.fullSearch = $item.fullSearch
-      #add dữ liệu ban đầu cho tempOrderDetail
-      @currentOrderDetail.name = @currentProduct.name
-      @currentOrderDetail.tempOrderId = @currentTab.id
-      @currentOrderDetail.productSummaryId = @currentProduct.id
-      @currentOrderDetail.productCode = @currentProduct.productCode
-      @currentOrderDetail.skullId = @currentProduct.skullId
-      @currentOrderDetail.warehouseId = @currentProduct.warehouseId
-      @currentOrderDetail.price = @currentProduct.price
-      @currentOrderDetail.quality = 1
-#      @currentOrderDetail.quality = 0 if calculation_max_sale_product(me.currentOrderDetail) <= 0
-      @currentOrderDetail.discountCash = 0
-      @currentOrderDetail.discountPercent = 0
-      @currentOrderDetail.totalPrice = @currentProduct.price * @currentOrderDetail.quality
-      @currentOrderDetail.totalAmount = @currentProduct.price * @currentOrderDetail.quality
-
-  # Bindable functions ----------------------------------------->
+  # Bindable functions -------------------------------------------------------------------------------------->
   @syncSeller = (model) => @currentTab.sellerId = model.id; @currentTab.update()
   @syncBuyer = (model) => @currentTab.buyerId = model.id; @currentTab.update()
   @syncTransport = (model) => @currentTab.delivery = model.value; @currentTab.update()
   @syncPayment = (model) => @currentTab.paymentMethod = model.value; @currentTab.update()
-  @syncBillDiscount = (model) =>
-    @currentTab.billDiscount = model
+  @syncBillDiscount = =>
+    @currentTab._discountPercent = @currentTab.discountPercent if @currentTab.billDiscount
+    @calucateBillDiscount(@currentTab)
     @currentTab.update()
-    @resetCurrentTab(@currentTab)
 
+  @productFoundAction = (item) =>
+    ProductSummary.get(item.id).then (data) =>
+      @sellingProduct = data
+      @sellingProduct.fullSearch = item.fullSearch
+      @sellingDetail = @newSellingDetailFrom @sellingProduct
 
-
-  @skyChange = => console.log 'bing!'
-
-  # Helper functions --------------------------------------------->
   @selectTab = (tab) =>
-    @resetCurrentTab(tab) #tính giảm giá % khi hện bill
-    @resetSellingProduct()
-    @reloadSellerAndCustomerAndTransportAndPayment()
-    @reloadTabDetails()
+    @saveCurrentTabOfflineData()
+    @seller = @saleAccounts.find { id: tab.sellerId }
+    @buyer = @customers.find { id: tab.buyerId }
+    @transport = @transports.find {value: tab.delivery}
+    @payment = @payments.find {value: tab.paymentMethod}
+    @searchText = tab.searchText
+    @sellingProduct = tab.sellingProduct
+    @sellingDetail = tab.sellingDetail
+    @reloadTabDetails tab
+    @calucateBillDiscount(tab)
+
+  @addOrderDetail = =>
+    if @sellingProduct and @sellingDetail.quality >= 1
+      temp = angular.copy @sellingDetail
+      temp.save().then (data) =>
+        foundOrderDetail = @tabDetails.find {id: data.id}
+        if foundOrderDetail then @reloadOrderDetailOf foundOrderDetail, data
+        else @tabDetails.push data
+        @searchText = ''
+
+        @updateSummaries()
+
+  @logger = => @focusSearchBox = true; console.log 'loggn'
+  # Tab helpers ---------------------------------------------------------------------------------------------->
+  @saveCurrentTabOfflineData = =>
+    @currentTab.searchText = @searchText
+    @currentTab.sellingProduct = @sellingProduct
+    @currentTab.sellingDetail = @sellingDetail
+
+  @reloadTabDetails = (tab) =>
+    @tabDetails = []
+    TempOrderDetail.query({temp_order_id: tab.id}).then (data) => @tabDetails = data
 
   @addTab = =>
-    console.log 'creating..'
     newTab = @newEmptyTab (Sky.Conversation.Call @buyer.name, @buyer.sex)
-    newTab.save().then (data) => @tabHistories.push data; @tabHistories[@tabHistories.indexOf data].active = true
+    newTab.save().then (data) => @tabHistories.push data; @selectTab data
 
   @deleteTab = (tab) =>
     foundTab = @tabHistories.find {id: tab.id}
@@ -102,7 +102,24 @@ Sky.controller 'saleCtrl', ['$routeParams','$http', 'Common', 'Product', 'Produc
     newTab.buyer_id = buyer_id ? @buyer.id
     newTab
 
-  @resetCurrentTab= (tab)=>
+  #OrderDetail helpers ------------------------------------------------------------------------------------>
+
+  @newSellingDetailFrom = (source) =>
+    result = new TempOrderDetail()
+    result.tempOrderId = @currentTab.id
+    result.productSummaryId = source.id
+    result.name = source.name
+    result.price = source.price
+    result.productCode = source.productCode
+    result.warehouseId = source.warehouseId
+    result.skullId = source.skullId
+    result.quality = 1
+    result.discountCash = 0
+    result.discountPercent = 0
+    result.totalPrice = result.finalPrice  = source.price;
+    result
+
+  @calucateBillDiscount= (tab)=>
     @currentTab = tab
     if @currentTab.discountCash == 0
       @currentTab.discountPercent = 0
@@ -110,35 +127,12 @@ Sky.controller 'saleCtrl', ['$routeParams','$http', 'Common', 'Product', 'Produc
       @currentTab.discountPercent = @currentTab.discountCash/@currentTab.totalPrice*100
     @currentTab
 
-  @resetSellingProduct = =>
-    @sellingProduct = null
-    @sellingDetail = null
-    @searchText = null
+  @updateSummaries = => TempOrder.get(@currentTab.id).then (data) =>  @currentTab = data; @calucateBillDiscount(@currentTab)
 
-  @reloadSellerAndCustomerAndTransportAndPayment = =>
-    @seller = @saleAccounts.find { id: @currentTab.sellerId }
-    @buyer = @customers.find { id: @currentTab.buyerId }
-    @transport = @transports.find {value: @currentTab.delivery}
-    @payment = @payments.find {value: @currentTab.paymentMethod}
-
-  @reloadTabDetails = =>
-    @tabDetails = []
-    TempOrderDetail.query({temp_order_id: @currentTab.id}).then (data) => @tabDetails = data
-
-  @reloadCurrentTab = => TempOrder.get(@currentTab.id).then (data) =>  @currentTab = data; @resetCurrentTab(@currentTab)
-
-  @addSellingProduct = =>
-    if @currentProduct != undefined and @currentOrderDetail.quality >= 1
-      temp = angular.copy @currentOrderDetail
-      temp.save().then (data) =>
-        foundOrderDetail = @tabDetails.find {id: data.id}
-        if foundOrderDetail
-          foundOrderDetail.quality = data.quality
-          foundOrderDetail.discountCash = data.discountCash
-          foundOrderDetail.totalAmount = data.totalAmount
-        else
-          @tabDetails.push data
-        @reloadCurrentTab()
+  @reloadOrderDetailOf = (oldOrder, newOrder) =>
+    oldOrder.quality = newOrder.quality
+    oldOrder.discountCash = newOrder.discountCash
+    oldOrder.finalPrice = newOrder.finalPrice
 
   @removeSellingProduct = (item, index)=> item.delete(); @tabDetails.splice index, 1; @reloadCurrentTab(@currentTab)
 
@@ -164,13 +158,13 @@ Sky.controller 'saleCtrl', ['$routeParams','$http', 'Common', 'Product', 'Produc
     else
       item.discountPercent = 0
       item.discountCash = 0
-    item.totalAmount = item.totalPrice - item.discountCash
+    item.finalPrice = item.totalPrice - item.discountCash
 
   @calculation_max_sale_product = ()=>
     temp = 0
     for product in @tabDetails
-      if product.productSummaryId == @currentProduct.id then temp += product.quality
-    temp = @currentProduct.quality - temp
+      if product.productSummaryId == @sellingProduct.id then temp += product.quality
+    temp = @sellingProduct.quality - temp
     temp
 
   @calculation_item_range_min_max = (item, min, max)=>

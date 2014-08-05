@@ -30,9 +30,9 @@ class TempOrderDetailsController < ApplicationController
 
       @temp_order_detail = old_order_detail
       @temp_order_detail.quality += temp_order_detail_params[:quality]
-      @temp_order_detail.total_amount = @temp_order_detail.quality * @temp_order_detail.price
-      @temp_order_detail.discount_cash = (@temp_order_detail.discount_percent * @temp_order_detail.total_amount)/100
-      @temp_order_detail.total_amount = @temp_order_detail.total_amount - @temp_order_detail.discount_cash
+      @temp_order_detail.total_price = @temp_order_detail.quality * @temp_order_detail.price
+      @temp_order_detail.discount_cash = (@temp_order_detail.discount_percent * @temp_order_detail.total_price)/100
+      @temp_order_detail.final_price = @temp_order_detail.total_price - @temp_order_detail.discount_cash
     else
       @temp_order_detail = TempOrderDetail.new(temp_order_detail_params)
     end
@@ -84,7 +84,7 @@ class TempOrderDetailsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def temp_order_detail_params
-      params.require(:temp_order_detail).permit(:temp_order_id, :product_summary_id, :product_code, :skull_id, :warehouse_id, :quality, :price, :discount_cash, :discount_percent, :temp_discount_percent, :total_amount)
+      params.require(:temp_order_detail).permit(:temp_order_id, :product_summary_id, :name, :product_code, :skull_id, :warehouse_id, :quality, :price, :discount_cash, :discount_percent, :temp_discount_percent, :total_price, :final_price)
     end
 end
 

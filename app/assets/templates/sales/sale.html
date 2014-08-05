@@ -6,40 +6,38 @@
                 caption="email" change="saleCtrl.syncSeller(model)"></sky-select>
     <sky-select options="saleCtrl.customers" model="saleCtrl.buyer" color="wisteria shadow"
                 caption="name" change="saleCtrl.syncBuyer(model)" size="20"></sky-select>
-
-    <input type="text" ng-model="salesCtrl.currentLabel" class="sky-control shadow"
-           typeahead="ps.fullSearch for ps in saleCtrl.productSummaries | filter:$viewValue | limitTo:8"
-           typeahead-on-select="saleCtrl.resetCurrentOrderDetail($item, $model, $label)" />
-
-    <sky-button color="lime shadow" caption="Thêm Sản Phẩm" ng-click="saleCtrl.addSellingProduct()"></sky-button>
+    <input type="text" ng-model="saleCtrl.searchText" class="sky-control shadow"
+           typeahead="product.caption for product in saleCtrl.allProducts | filter:$viewValue | limitTo:8"
+           typeahead-on-select="saleCtrl.productFoundAction($item)" />
+    <sky-button color="lime shadow" caption="Thêm Sản Phẩm" ng-click="saleCtrl.addOrderDetail()"></sky-button>
     <sky-button color="lime shadow" caption="Cập Nhật" ng-click=""></sky-button>
     <sky-button color="lime shadow" caption="Hoàn Tất" ng-click=""></sky-button>
 </div>
 <div class="row no-margin">
-    <!--Ten:               <input type="text" class="sky-control shadow" width="100px"-->
-                              <!--ng-model="saleCtrl.currentOrderDetail.name" ng-disabled=true/>-->
+    Ten:               <input type="text" class="sky-control shadow" width="100px"
+                              ng-model="saleCtrl.sellingDetail.name" ng-disabled=true />
 
-    <!--Gia:               <input type="text" class="sky-control shadow" width="100px"-->
-                              <!--ng-model="saleCtrl.currentOrderDetail.price" ng-disabled=true/>-->
+    Gia:               <input type="text" class="sky-control shadow" width="100px"
+                              ng-model="saleCtrl.sellingDetail.price" ng-disabled=true />
 
     TamTinh:           <input type="text" class="sky-control shadow" width="100px"
-                              ng-model="saleCtrl.currentOrderDetail.totalPrice" ng-disabled=true />
+                              ng-model="saleCtrl.sellingDetail.totalPrice" ng-disabled=true />
 
     Tongtien:          <input type="text" class="sky-control shadow" width="100px"
-                              ng-model="saleCtrl.currentOrderDetail.totalAmount"ng-disabled=true />
+                              ng-model="saleCtrl.sellingDetail.finalPrice"ng-disabled=true />
 
     Số Lượng:          <input type="number"  class="sky-control shadow" min="0" style="width: 70px;"
-                              ng-change="saleCtrl.calculation_tabDetails(saleCtrl.currentOrderDetail, true)"
-                              ng-model="saleCtrl.currentOrderDetail.quality" ng-disabled="saleCtrl.currentProduct == null"/>
+                              ng-change="saleCtrl.calculation_tabDetails(saleCtrl.sellingDetail, true)"
+                              ng-model="saleCtrl.sellingDetail.quality" ng-disabled="saleCtrl.sellingProduct == null"/>
 
     Giảm Giá %:        <input type="number" class="sky-control shadow" min="0" style="width: 100px;"
-                              ng-change="saleCtrl.calculation_tabDetails(saleCtrl.currentOrderDetail, false)"
-                              ng-model="saleCtrl.currentOrderDetail.discountPercent" ng-disabled="saleCtrl.currentProduct == null"/>
+                              ng-change="saleCtrl.calculation_tabDetails(saleCtrl.sellingDetail, false)"
+                              ng-model="saleCtrl.sellingDetail.discountPercent" ng-disabled="saleCtrl.sellingProduct == null"/>
 
     Giảm Giá Tiền Mặt: <input type="number" class="sky-control shadow" min="0" style="width: 100px;"
-                              ng-change="saleCtrl.calculation_tabDetails(saleCtrl.currentOrderDetail, true)"
-                              ng-model="saleCtrl.currentOrderDetail.discountCash" ng-disabled="saleCtrl.currentProduct == null"/>
-
+                              ng-change="saleCtrl.calculation_tabDetails(saleCtrl.sellingDetail, true)"
+                              ng-model="saleCtrl.sellingDetail.discountCash" ng-disabled="saleCtrl.sellingProduct == null"/>
+  <input typpe="text" ng-model="scoped" ng-change="saleCtrl.logger()">
 </div>
 <div class="row no-margin">
     <table class="table table-condensed table-hover">
@@ -59,9 +57,9 @@
             <td>{{item.skullId}}</td>
             <td>{{item.price}}</td>
             <td>{{item.quality}}</td>
-            <td>{{item.discountPercent}}</td>
+            <td>{{saleCtrl.currentTab._discountPercent || item.discountPercent}}</td>
             <td>{{item.discountCash}}</td>
-            <td>{{item.totalAmount}}</td>
+            <td>{{item.finalPrice}}</td>
             <td><input type="button" value="X" ng-click="saleCtrl.removeSellingProduct(item, $index)"></td>
         </tr>
     </table>
@@ -78,10 +76,11 @@
                      ng-change="saleCtrl.calculation_currentTab(saleCtrl.currentTab, false)" />
 
     TamTinh <input type="number" class="sky-control shadow" ng-model="saleCtrl.currentTab.totalPrice" ng-disabled="true"/>
-
-    Voucher <input type="number" class="sky-control shadow"
-                   ng-disabled="saleCtrl.change_bill_discount()"
-                   ng-model="saleCtrl.currentTab.discountVoucher"/>
+    <div ng-show="false">
+      <input type="number" class="sky-control shadow"
+             ng-disabled="saleCtrl.change_bill_discount()"
+             ng-model="saleCtrl.currentTab.discountVoucher"/>
+    </div>
 </div>
 <div class="row no-margin">
     <sky-select options="saleCtrl.payments" model="saleCtrl.payment" color="pumpkin shadow"
@@ -98,35 +97,15 @@
 
     Tinh Theo Tong Bill<input type="checkbox" class="sky-control shadow"
                               ng-model="saleCtrl.currentTab.billDiscount"
-                              ng-change="saleCtrl.syncBillDiscount(saleCtrl.currentTab.billDiscount)" />
+                              ng-change="saleCtrl.syncBillDiscount()" />
 
 
     {{saleCtrl.change_bill_discount}}
 </div>
-<br/><br/>
-<!--<sky-select options="saleCtrl.saleAccounts" model="saleCtrl.seller" color="shadow"-->
-            <!--caption="email" change="saleCtrl.syncSeller(model)"></sky-select>-->
-<!--<sky-select options="saleCtrl.customers" model="saleCtrl.buyer" color="wisteria shadow"-->
-            <!--caption="name" change="saleCtrl.syncBuyer(model)" size="20"></sky-select>-->
 
-<!--<input type="text" class="sky-control shadow sale-typeahead" width="200px" ng-model="saleCtrl.searchText"-->
-       <!--typeahead="product.caption for product in saleCtrl.allProducts | filter:$viewValue | limitTo:8"/>-->
-
-<!--<input type="button" value="Thêm" ng-click="salesCtrl.addNewTab()">-->
-<!--<input type="button" value="Xóa" ng-click="salesCtrl.removeTab()">-->
-
-<!--<div dx-select-box="{dataSource: saleCtrl.saleAccounts, displayExpr: 'email', valueExpr: 'id', width: '100px', height: '30px'}"></div>-->
-<!--<sky-button color="lime shadow" caption="Cloud" icon="fa fa-pencil" right-icon="true"></sky-button>-->
-<!--<div dx-text-box="{value: 'text'}"></div>-->
-
-
-<!--<br/>-->
-<!--<sky-button caption="Caption only" color="lime shadow"></sky-button>-->
-<!--<sky-button caption="Caption & icon" icon="fa fa-pencil" color="amethyst shadow"></sky-button>-->
-<!--<sky-button caption="Caption & rIcon" icon="fa fa-pencil" right-icon="true" color="yellow shadow"></sky-button>-->
-<!--<input type="text" class="sky-control shadow" ng-model="saleCtrl.seller.email"/>-->
-<!--<sky-select options="saleCtrl.saleAccounts" model="saleCtrl.seller" color="pumpkin shadow" width="100px"-->
-            <!--caption="email" change="saleCtrl.syncSeller(model)"></sky-select>-->
-
-
+<div>
+  <input type='text' ng-focus="cb" />
+  <input type='checkbox' ng-model="cb" />
+  {{cb == true}}
+</div>
 

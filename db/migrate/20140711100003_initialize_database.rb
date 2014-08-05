@@ -485,6 +485,7 @@ class InitializeDatabase < ActiveRecord::Migration
       t.belongs_to :temp_order, :null => false
 
       t.belongs_to :product_summary, :null => false
+      t.string :name, :null => false
       t.string :product_code, :null => false
       t.integer :skull_id, :null => false
       t.integer :warehouse_id, :null => false
@@ -495,7 +496,8 @@ class InitializeDatabase < ActiveRecord::Migration
       t.decimal :discount_cash, :null => false, :default => 0
       t.decimal :discount_percent, :null => false, :default => 0
       t.decimal :temp_discount_percent, :null => false, :default => 0
-      t.decimal :total_amount, :null => false, :default => 0
+      t.decimal :total_price, :null => false, :default => 0
+      t.decimal :final_price, :null => false, :default => 0
 
       t.timestamps
     end
