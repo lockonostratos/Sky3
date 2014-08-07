@@ -12,14 +12,14 @@
     <th>Tình Trạng</th>
     </thead>
     <tr ng-repeat="item in saleCtrl.tabDetails | orderBy:'price'">
-      <td>{{item.name}}</td>
-      <td>{{item.productCode}}</td>
-      <td>{{item.skullId}}</td>
-      <td>{{item.price}}</td>
-      <td>{{item.quality}}</td>
-      <td>{{saleCtrl.currentTab._discountPercent || item.discountPercent}}</td>
-      <td>{{item.discountCash}}</td>
-      <td>{{item.finalPrice}}</td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
       <td><input type="button" value="X" ng-click="saleCtrl.removeSellingProduct(item, $index)"></td>
     </tr>
   </table>

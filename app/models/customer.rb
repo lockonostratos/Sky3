@@ -8,6 +8,7 @@ class Customer < ActiveRecord::Base
   has_many :mackay_hobbies, :through => :mackay_profiles
   has_many :mackay_life_styles, :through => :mackay_profiles
   has_many :mackay_and_companies, :through => :mackay_profiles
+  has_many :transactions, class_name: 'Transaction', foreign_key: 'owner_id'
 
   belongs_to :merchant
   belongs_to :merchant_account

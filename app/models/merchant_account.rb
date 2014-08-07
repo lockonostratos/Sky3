@@ -16,7 +16,8 @@ class MerchantAccount < ActiveRecord::Base
   belongs_to :branch
 
   has_many :roles, class_name: 'MerchantAccountRole', foreign_key: 'merchant_account_id'
-  belongs_to :warehouse, class_name: :Warehouse, foreign_key: 'current_warehouse_id'
+  has_many :transactions, class_name: 'Transaction', foreign_key: 'creator_id'
+  belongs_to :warehouse, class_name: 'Warehouse', foreign_key: 'current_warehouse_id'
 
 
   before_save :add_merchant_account

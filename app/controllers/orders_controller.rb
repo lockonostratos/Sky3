@@ -41,27 +41,24 @@ class OrdersController < MerchantApplicationController
   def create
     temp_order = TempOrder.find(params[:order]['temp_order_id'])
     if temp_order
-      @current_order = Order.new()
-      @current_order.branch_id = temp_order.branch_id
-      @current_order.warehouse_id = temp_order.warehouse_id
-      @current_order.merchant_account_id = temp_order.seller_id
-      @current_order.customer_id = temp_order.buyer_id
-      @current_order.name = temp_order.name
-      @current_order.status = 0
-      @current_order.return = 0
-      @current_order.delivery = temp_order.delivery
-      @current_order.payment_method = temp_order.payment_method
-      @current_order.bill_discount = temp_order.bill_discount
-      @current_order.deposit = temp_order.deposit
-      @current_order.currency_debit = 0
-      @current_order.discount_voucher =temp_order.discount_voucher
-      @current_order.discount_cash = temp_order.discount_cash
-      @current_order.total_price = temp_order.total_price
-      @current_order.final_price = temp_order.final_price
-
       selling_stock = temp_order.details
       if selling_stock
-        @current_order.save()
+        @current_order = Order.create!( branch_id: temp_order.branch_id,
+                                        warehouse_id: temp_order.warehouse_id,
+                                        creator_id: temp_order.creator_id,
+                                        seller_id: temp_order.seller_id,
+                                        buyer_id: temp_order.buyer_id,
+                                        name: orders_bill_code(temp_order.warehouse_id),
+                                        status: :initialized,
+                                        delivery: temp_order.delivery,
+                                        payment_method: temp_order.payment_method,
+                                        bill_discount: temp_order.bill_discount,
+                                        deposit: temp_order.deposit,
+                                        debt: 0,
+                                        discount_voucher: temp_order.discount_voucher,
+                                        discount_cash: temp_order.discount_cash,
+                                        total_price: temp_order.total_price,
+                                        final_price: temp_order.final_price )
         selling_stock.each do |product|
           stocking_items = Product.where(product_code: product['product_code'], skull_id: product['skull_id'], warehouse_id: product['warehouse_id']).where('available_quality > ?', 0)
           subtract_quality_on_sales stocking_items, product
@@ -69,15 +66,15 @@ class OrdersController < MerchantApplicationController
         #Tìm Bang Metro_Summary
         metro_summary = MetroSummary.find_by_warehouse_id(@current_order.warehouse_id)
         #Cộng tiền vào bảng Metro Summary
-        metro_summary.revenue += @current_order.final_price  if @current_order.delivery == false
-        metro_summary.revenue_day += @current_order.final_price if @current_order.delivery == false
-        metro_summary.revenue_month += @current_order.final_price if @current_order.delivery == false
+        metro_summary.revenue += @current_order.final_price  if @current_order.delivery == 0
+        metro_summary.revenue_day += @current_order.final_price if @current_order.delivery == 0
+        metro_summary.revenue_month += @current_order.final_price if @current_order.delivery == 0
         metro_summary.save()
         #Tạo phiếu giao hàng
         if @current_order.delivery
           Delivery.create!(
                   :order_id => @current_order.id,
-                  :merchant_account_id => @current_order.merchant_account_id,
+                  :merchant_account_id => @current_order.creator_id,
                   :name => @current_order.name,
                   :creation_date => @current_order.created_at,
                   :delivery_date => @current_order.updated_at,
@@ -91,10 +88,24 @@ class OrdersController < MerchantApplicationController
         end
 
         #Cập nhật trang thái order
-        @current_order.update!(:status=>1) if @current_order.delivery == false and @current_order.payment_method == 0
-        @current_order.update!(:status=>2) if @current_order.delivery == false and @current_order.payment_method == 1
-        @current_order.update!(:status=>3) if @current_order.delivery and @current_order.payment_method == 0
-        @current_order.update!(:status=>4) if @current_order.delivery and @current_order.payment_method == 1
+        if @current_order.delivery == 0
+          @current_order.status = Order.statuses[:finish]
+        elsif @current_order.delivery == 1
+          @current_order.status = Order.statuses[:delivery]
+        end
+        @current_order.save()
+        @current_order.branch
+        Transaction.create(type:1)
+
+        # (merchant_id: 1,
+        #     branch_id: 1,
+        #     warehouse_id:1,
+        #     type: 1,
+        #     parent_id: 1,
+        #     creator_id: 1,
+        #     owner_id: 1,
+        #     receivable: 1,
+        # status: 1
 
         #Xóa sản phẩm trong bảng tạm
         # temp_order.destroy
@@ -174,6 +185,7 @@ class OrdersController < MerchantApplicationController
           order_detail = OrderDetail.create!(
               :order_id => @current_order.id,
               :product_id => product.id,
+              :name => @current_order.name,
               :quality => takken_quality,
               :price => selling_item['price'],
               :discount_percent => selling_item['discount_percent'],
@@ -181,15 +193,16 @@ class OrdersController < MerchantApplicationController
               :final_price => (takken_quality * selling_item['price']) - (selling_item['discount_percent'] * (takken_quality * selling_item['price'])/100)
           )
         end
-
-        order_detail.update!(:status=>1) if @current_order.delivery == false and @current_order.payment_method == 0
-        order_detail.update!(:status=>2) if @current_order.delivery == false and @current_order.payment_method == 1
-        order_detail.update!(:status=>3) if @current_order.delivery and @current_order.payment_method == 0
-        order_detail.update!(:status=>4) if @current_order.delivery and @current_order.payment_method == 1
+        if @current_order.delivery == 0
+          order_detail.status = Order.statuses[:finish]
+        elsif @current_order.delivery == 1
+          order_detail.status = Order.statuses[:delivery]
+        end
+        order_detail.save()
 
         #Trừ sản phẩm vào bảng Product(ko trừ nếu có giao hàng)
         product.available_quality -= takken_quality
-        product.instock_quality -= takken_quality if @current_order.delivery == false
+        product.instock_quality -= takken_quality if @current_order.delivery == 0
         product.save()
         transactioned_quality += takken_quality
         if transactioned_quality == selling_item['sale_quality'] then break end

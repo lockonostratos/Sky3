@@ -17,8 +17,7 @@ Sky.controller 'saleCtrl', ['focus', '$routeParams','$http', 'Common', 'Product'
 
     @tabHistories = []; @currentTab = {}; @tabDetails = [];
     TempOrder.query().then (data) =>
-      for order in data
-        order.tempDiscountCash = order.discountCash
+      order.oldDiscountCash = order.discountCash for order in data
       @tabHistories = data
       if @tabHistories.length is 0
         @addTab()
@@ -37,13 +36,17 @@ Sky.controller 'saleCtrl', ['focus', '$routeParams','$http', 'Common', 'Product'
     @syncBuyer = (model) => @currentTab.buyerId = model.id; @currentTab.update()
     @syncTransport = (model) => @currentTab.delivery = model.value; @currentTab.update()
     @syncPayment = (model) => @currentTab.paymentMethod = model.value; @currentTab.update()
-    @syncDiscountOrder = =>
-      if @currentTab.tempDiscountCash != @currentTab.discountCash
-        @currentTab.update().then (data)=> @currentTab.tempDiscountCash = @currentTab.discountCash
+    @syncDiscountOrder = => @syncOnChange @currentTab, 'discountCash'
+
     @syncBillDiscount = =>
       @currentTab.update().then (data) =>
         @currentTab._discountPercent = @currentTab.discountPercent if @currentTab.billDiscount
-        @reloadCurrentTab(@currentTab)
+        @reloadTabDiscount(@currentTab)
+
+    @syncOnChange = (obj, key, oldKey = null) =>
+      oldKey ?= 'old' + key.charAt(0).toUpperCase() + key.slice(1)
+      if obj[key] isnt obj[oldKey] then obj.update().then (data) => obj[oldKey] = obj[key]
+
     @orderFinished = =>
       order = new Order()
       order.temp_order_id = @currentTab.id
@@ -66,7 +69,7 @@ Sky.controller 'saleCtrl', ['focus', '$routeParams','$http', 'Common', 'Product'
       @searchText = tab.searchText
       @sellingProduct = tab.sellingProduct
       @sellingDetail = tab.sellingDetail
-      @reloadCurrentTab tab
+      @reloadTabDiscount tab
       @reloadTabDetails tab
 
 
@@ -130,7 +133,7 @@ Sky.controller 'saleCtrl', ['focus', '$routeParams','$http', 'Common', 'Product'
       result.totalPrice = result.finalPrice  = source.price;
       result
 
-    @reloadCurrentTab= (tab)=>
+    @reloadTabDiscount= (tab)=>
       @currentTab = tab
       if @currentTab.discountCash == 0
         @currentTab.discountPercent = 0
@@ -139,14 +142,14 @@ Sky.controller 'saleCtrl', ['focus', '$routeParams','$http', 'Common', 'Product'
       @currentTab
 
     #cập nhật mới cập nhật vào @currentTab còn @tabHistories chưa cập nhật
-    @updateSummaries = => TempOrder.get(@currentTab.id).then (data) =>  @currentTab = data; @reloadCurrentTab(@currentTab)
+    @updateSummaries = => TempOrder.get(@currentTab.id).then (data) =>  @currentTab = data; @reloadTabDiscount(@currentTab)
 
     @reloadOrderDetailOf = (oldOrder, newOrder) =>
       oldOrder.quality = newOrder.quality
       oldOrder.discountCash = newOrder.discountCash
       oldOrder.finalPrice = newOrder.finalPrice
 
-    @removeSellingProduct = (item, index)=> item.delete(); @tabDetails.splice index, 1; @reloadCurrentTab(@currentTab)
+    @removeSellingProduct = (item, index)=> item.delete(); @tabDetails.splice index, 1; @reloadTabDiscount(@currentTab)
 
     @calculation_currentTab = (item, boolean)=>
       item.discountCash = @calculation_item_range_min_max(item.discountCash, 0, item.totalPrice)
