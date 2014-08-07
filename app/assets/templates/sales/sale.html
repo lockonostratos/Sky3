@@ -2,6 +2,8 @@
          delete="saleCtrl.deleteTab(tab)" change="saleCtrl.selectTab(tab)"></sky-tab>
 
 <div class="row no-margin">
+  <sky-select options="saleCtrl.transports" model="saleCtrl.transport" color="pumpkin shadow"
+              caption="display" change="saleCtrl.syncTransport(model)"></sky-select>
   <sky-select options="saleCtrl.saleAccounts" model="saleCtrl.seller" color="pumpkin shadow"
               caption="email" change="saleCtrl.syncSeller(model)"></sky-select>
   <sky-select options="saleCtrl.customers" model="saleCtrl.buyer" color="wisteria shadow"
@@ -10,6 +12,9 @@
          typeahead="product.caption for product in saleCtrl.allProducts | filter:$viewValue | limitTo:8"
          typeahead-on-select="saleCtrl.productFoundAction($item)" />
   <sky-button color="lime shadow" caption="Thêm Sản Phẩm" ng-click="saleCtrl.addOrderDetail()"></sky-button>
+  Tinh Theo Tong Bill<input type="checkbox" class="sky-control shadow"
+                            ng-model="saleCtrl.currentTab.billDiscount"
+                            ng-change="saleCtrl.syncBillDiscount()" />
   <sky-button color="lime shadow" caption="Hoàn Tất" ng-click="saleCtrl.orderFinished()"></sky-button>
 </div>
 <div class="row no-margin">
@@ -64,8 +69,7 @@
   </table>
 </div>
 <div class="row no-margin">
-  <sky-select options="saleCtrl.transports" model="saleCtrl.transport" color="pumpkin shadow"
-              caption="display" change="saleCtrl.syncTransport(model)"></sky-select>
+
 
   TienThuVao<input type="number" class="sky-control shadow" ng-model="saleCtrl.currentTab.deposit"/>
 
@@ -84,8 +88,6 @@
   </div>
 </div>
 <div class="row no-margin">
-  <sky-select options="saleCtrl.payments" model="saleCtrl.payment" color="pumpkin shadow"
-              caption="display" change="saleCtrl.syncPayment(model)"></sky-select>{{}}
 
   TienThoiLai <input type="number" ng-model="saleCtrl.currentTab.currencyDebit" class="sky-control shadow" ng-disabled="true"/>
 
@@ -98,10 +100,5 @@
 
   TongTien<input type="number" class="sky-control shadow" ng-model="saleCtrl.currentTab.finalPrice" ng-disabled="true"/>
 
-  Tinh Theo Tong Bill<input type="checkbox" class="sky-control shadow"
-                            ng-model="saleCtrl.currentTab.billDiscount"
-                            ng-change="saleCtrl.syncBillDiscount()" />
 
-  <br/>
-  {{saleCtrl.currentTab}}
 </div>

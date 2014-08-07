@@ -2,6 +2,8 @@ class Branch < ActiveRecord::Base
   has_many :warehouses
   has_many :orders
   has_many :merchant_accounts
+  has_many :transactions
+  has_many :transaction_details
 
   belongs_to :merchant
 

@@ -6,6 +6,8 @@ class Merchant < ActiveRecord::Base
   has_many :providers
   has_many :warehouses
   has_many :merchant_areas
+  has_many :transactions
+  has_many :transaction_details
 
   def find_sales
     result = MerchantAccount

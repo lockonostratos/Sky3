@@ -349,44 +349,70 @@ class InitializeDatabase < ActiveRecord::Migration
 
       t.timestamps
     end
+
+    #Transactions ---------->
+    #group[enum]: nhap kho, kiem kho, ban hang, nhom thu chi [tien dien, tien nuoc, ]
+    #parent_id [id của chủ thể transaction ví dụ là order_id, import_id]
+    #merchant, branch, warehouse
+    #creator [merchantAccount]
+    #owner_id [chủ thể của transaction: customer]
+    #receivable [bool: true -> phải thu, false -> phải trả]
+    #status [kết thúc, đang theo dõi, đã hủy] [closed, tracking, cancelled]
+    #due_day
+
+    #TransactionDetails.
+    #parent_id [transaction_id]
+    #cash
+    #description => nullable
+    #merchant, branch, warehouse
+    create_table :transactions do |t|
+      t.belongs_to :merchant
+      t.belongs_to :branch
+      t.belongs_to :warehouse
+      t.integer :parent_id
+      t.integer :group
+      t.integer :creator_id
+      t.integer :owner_id
+      t.boolean :receivable
+      t.date    :due_day
+      t.integer :status
+      t.timestamps
+    end
+
+    create_table :transaction_details do |t|
+      t.belongs_to :transaction
+      t.belongs_to :merchant
+      t.belongs_to :branch
+      t.belongs_to :warehouse
+
+      t.decimal    :cash
+      t.text       :decription
+      t.timestamps
+    end
+
     #Don dat hang-------------------------------------------->
     create_table :orders do |t|
       t.belongs_to :branch, :null => false                         #bán chi nhánh nào
       t.belongs_to :warehouse, :null => false                      #bán cửa hàng nào
-      t.belongs_to :merchant_account, :null => false               #người bán
-      t.belongs_to :customer, :null => false                       #người mua
-      t.string :name                                               #tên phiếu order(tính lại khi cập nhật)
 
-      t.boolean :return, :null => false, :default => false         #Id don tra hang (neu co)
-      t.integer :payment_method, :null => false                    #cách thanh toán (tiền mặt, nợ)
-      t.boolean :delivery,:null => false, :default =>false         #phương thức vận chuyển(trực tiếp, giao hàng)
+      t.integer :creator_id, :null => false                        #người tạo
+      t.integer :seller_id, :null => false                         #người bán
+      t.integer :buyer_id, :null => false                          #người mua
+      t.string :name                                               #tên phiếu order(tính lại khi cập nhật)
+      t.boolean :return, :null => false,           :default => false         #Id don tra hang (neu co)
+      t.integer :payment_method, :null => false,   :default => 0     #cách thanh toán (tiền mặt, nợ)
+      t.integer :delivery,:null => false,          :default => 0         #phương thức vận chuyển(trực tiếp, giao hàng)
                                                                       #false ko co giao hàng, true có giao hàng
       t.boolean :bill_discount, :default => false                  #cách tích giảm giá của order theo từng sản phẩm hay tổng phiếu order
                                                                       #false tính theo từng sp, true tính theo tổng hóa đơn
       t.decimal :total_price, :null => false                       #Tổng giá trị hóa đơn chưa giảm giá
-      t.decimal :discount_voucher, :null => false, :default => 0   #giam gia theo phiếu giảm giá
+      t.decimal :discount_voucher, :null => false,:default => 0   #giam gia theo phiếu giảm giá
       t.decimal :discount_cash, :null => false, :default => 0      #giam gia tinh bang tien mat
-      t.decimal :final_price, :null => false, :default=>0          #Tổng tiền còn lại khi trừ giảm giá.
+      t.decimal :final_price, :null => false, :default => 0          #Tổng tiền còn lại khi trừ giảm giá.
 
-      t.decimal :deposit, :null => false, :default=>0              #số tiền trả trước
-      t.decimal :currency_debit, :null => false, :default => 0     #số tiền còn nợ
-      #tinh trang don hang
-      #lúc khởi tạo
-      #1 giao dich trực tiếp thành công (ko nợ)
-      #2 giao dich trực tiếp thành công (có nợ)
-      #3 giao dịch có giao hàng (ko nợ)
-      #4 giao dịch có giao hàng (có nợ)
-
-      #sao khi xử lý
-      #5 giao dịch có giao hàng thành công (ko nợ)
-      #6 giao dịch có giao hàng thành công (có nợ)
-
-      #7 giao dich trực tiếp thất bại (ko nợ)
-      #8 giao dich trực tiếp thất bại (có nợ)
-
-      #9 giao dịch có giao hàng thất bại (ko nợ)
-      #10 giao dịch có giao hàng thất bại(có nợ)
-      t.integer :status, :null => false, :default => 0
+      t.decimal :deposit,     :null => false, :default => 0              #số tiền trả trước
+      t.decimal :debt, :null => false, :default => 0               #số tiền còn nợ
+      t.integer :status, :null => false, :default => 0 #cho giao hang, hoan tat, cancelled,
 
       t.timestamps
     end
@@ -401,7 +427,7 @@ class InitializeDatabase < ActiveRecord::Migration
       t.decimal :price, :null => false
       t.decimal :discount_cash, :null => false, :default => 0
       t.decimal :discount_percent, :null => false, :default => 0
-      t.decimal :total_amount, :null => false, :default => 0
+      t.decimal :final_price, :null => false, :default => 0
       #tinh trang don hang
       #1 giao dich trực tiếp thành công (ko nợ)
       #2 giao dich trực tiếp thành công (có nợ)

@@ -7,6 +7,8 @@ class Warehouse < ActiveRecord::Base
   has_many :product_summaries
   has_many :role_warehouses
   has_many :metro_summaries
+  has_many :transactions
+  has_many :transaction_details
 
   belongs_to :branch
   belongs_to :merchant
