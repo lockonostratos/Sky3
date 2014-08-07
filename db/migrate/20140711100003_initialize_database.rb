@@ -371,14 +371,21 @@ class InitializeDatabase < ActiveRecord::Migration
       t.decimal :deposit, :null => false, :default=>0              #số tiền trả trước
       t.decimal :currency_debit, :null => false, :default => 0     #số tiền còn nợ
       #tinh trang don hang
+      #lúc khởi tạo
       #1 giao dich trực tiếp thành công (ko nợ)
       #2 giao dich trực tiếp thành công (có nợ)
       #3 giao dịch có giao hàng (ko nợ)
       #4 giao dịch có giao hàng (có nợ)
+
+      #sao khi xử lý
       #5 giao dịch có giao hàng thành công (ko nợ)
       #6 giao dịch có giao hàng thành công (có nợ)
-      #7 giao dịch có giao hàng thất bại (ko nợ)
-      #8 giao dịch có giao hàng thất bại(có nợ)
+
+      #7 giao dich trực tiếp thất bại (ko nợ)
+      #8 giao dich trực tiếp thất bại (có nợ)
+
+      #9 giao dịch có giao hàng thất bại (ko nợ)
+      #10 giao dịch có giao hàng thất bại(có nợ)
       t.integer :status, :null => false, :default => 0
 
       t.timestamps
@@ -420,8 +427,13 @@ class InitializeDatabase < ActiveRecord::Migration
       t.string :delivery_address, :null => false #đia chi giao hang
       t.string :contact_name, :null => false #tên nguoi lien lac
       t.string :contact_phone, :null => false #so dt nguoi lien lac
-      t.decimal :transportation_fee, :null => false
+      t.decimal :transportation_fee, :null => false #phi giao hang
       t.string :comment, :null => false
+      #tình trang status
+      #0 mới khởi tạo
+      #1 đang giao hang
+      #2 thành công
+      #3 thất bại
       t.integer :status, :null => false
 
       t.timestamps

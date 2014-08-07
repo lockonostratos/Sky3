@@ -27,9 +27,13 @@ Rails.application.routes.draw do
         get 'import_availables'
       end
     end
+    resources :orders
+    resources :order_details
+    resources :deliveries
 
     resources :temp_orders
     resources :temp_order_details
+
 
     resources :temp_import_details
   end

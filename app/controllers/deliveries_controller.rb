@@ -1,43 +1,22 @@
 class DeliveriesController < MerchantApplicationController
   before_action :set_delivery, only: [:show, :edit, :update, :destroy]
 
-  # GET /deliveries
-  # GET /deliveries.json
   def index
     @deliveries = Delivery.where(order_id: all_order_on_merchant(current_merchant_account.merchant_id))
-    respond_to do |format|
-      format.html { render layout: "account" }
-      format.json { render :json => @deliveries}
-    end
   end
 
-  # GET /deliveries/1
-  # GET /deliveries/1.json
   def show
-    respond_to do |format|
-      format.html { render layout: "account" }
-      format.json { render :json => @delivery }
-    end
   end
 
-  # GET /deliveries/new
   def new
     @delivery = Delivery.new
   end
 
-  # GET /deliveries/1/edit
   def edit
-    respond_to do |format|
-      format.html { render layout: "account" }
-      format.json { render :json => @delivery }
-    end
   end
 
-  # POST /deliveries
-  # POST /deliveries.json
   def create
     @delivery = Delivery.new(delivery_params)
-
     respond_to do |format|
       if @delivery.save
         format.html { redirect_to @delivery, notice: 'Delivery was successfully created.' }
@@ -49,8 +28,6 @@ class DeliveriesController < MerchantApplicationController
     end
   end
 
-  # PATCH/PUT /deliveries/1
-  # PATCH/PUT /deliveries/1.json
   def update
     @delivery.attributes = (delivery_params)
     delivery = Delivery.find(@delivery.id)
@@ -110,8 +87,7 @@ class DeliveriesController < MerchantApplicationController
     end
   end
 
-  # DELETE /deliveries/1
-  # DELETE /deliveries/1.json
+
   def destroy
     @delivery.destroy
     respond_to do |format|

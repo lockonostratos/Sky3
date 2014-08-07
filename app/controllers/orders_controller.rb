@@ -39,95 +39,72 @@ class OrdersController < MerchantApplicationController
   # POST /orders.json
 
   def create
-      param = params[:order]
-      bill_code = params[:bill_code]
-      delivery_code = params[:delivery]
-      selling_stock = param['buy_product_list']
-      order_summary = param['order_summary']
-    #-----Tạo hóa đơn bán hàng!--->
-    #Nhận: Mảng các sản phẩm [stockSummary]
-    #1.Tạo hóa đơn mới
-    @current_order = Order.new()
-    @current_order.branch_id = brach_on_warehouse(order_summary['warehouse_id'])
-    @current_order.warehouse_id = order_summary['warehouse_id']
-    @current_order.merchant_account_id = order_summary['merchant_account']['id']
-    @current_order.customer_id = order_summary['merchant_customer']['id']
-    @current_order.name = orders_bill_code(order_summary['warehouse_id'])
+    temp_order = TempOrder.find(params[:order]['temp_order_id'])
+    if temp_order
+      @current_order = Order.new()
+      @current_order.branch_id = temp_order.branch_id
+      @current_order.warehouse_id = temp_order.warehouse_id
+      @current_order.merchant_account_id = temp_order.seller_id
+      @current_order.customer_id = temp_order.buyer_id
+      @current_order.name = temp_order.name
+      @current_order.status = 0
+      @current_order.return = 0
+      @current_order.delivery = temp_order.delivery
+      @current_order.payment_method = temp_order.payment_method
+      @current_order.bill_discount = temp_order.bill_discount
+      @current_order.deposit = temp_order.deposit
+      @current_order.currency_debit = 0
+      @current_order.discount_voucher =temp_order.discount_voucher
+      @current_order.discount_cash = temp_order.discount_cash
+      @current_order.total_price = temp_order.total_price
+      @current_order.final_price = temp_order.final_price
 
-    @current_order.return=0
-    @current_order.delivery=order_summary['delivery']
-    @current_order.payment_method=order_summary['payment_method']
-    @current_order.status=0
+      selling_stock = temp_order.details
+      if selling_stock
+        @current_order.save()
+        selling_stock.each do |product|
+          stocking_items = Product.where(product_code: product['product_code'], skull_id: product['skull_id'], warehouse_id: product['warehouse_id']).where('available_quality > ?', 0)
+          subtract_quality_on_sales stocking_items, product
+        end
+        #Tìm Bang Metro_Summary
+        metro_summary = MetroSummary.find_by_warehouse_id(@current_order.warehouse_id)
+        #Cộng tiền vào bảng Metro Summary
+        metro_summary.revenue += @current_order.final_price  if @current_order.delivery == false
+        metro_summary.revenue_day += @current_order.final_price if @current_order.delivery == false
+        metro_summary.revenue_month += @current_order.final_price if @current_order.delivery == false
+        metro_summary.save()
+        #Tạo phiếu giao hàng
+        if @current_order.delivery
+          Delivery.create!(
+                  :order_id => @current_order.id,
+                  :merchant_account_id => @current_order.merchant_account_id,
+                  :name => @current_order.name,
+                  :creation_date => @current_order.created_at,
+                  :delivery_date => @current_order.updated_at,
+                  :delivery_address => 'Ho Chi Minh',
+                  :contact_name => 'Sang',
+                  :contact_phone => '0123456789',
+                  :transportation_fee => 200,
+                  :comment => 'Giao Hang Tan Noi',
+                  :status => 0
+              )
+        end
 
-    @current_order.discount_voucher = order_summary['voucher']
-    @current_order.deposit=0
-    @current_order.bill_discount = order_summary['bill_discount']
-    @current_order.discount_cash = order_summary['discount_cash']
-    @current_order.total_price = order_summary['total_price']
-    @current_order.final_price = order_summary['final_price']
+        #Cập nhật trang thái order
+        @current_order.update!(:status=>1) if @current_order.delivery == false and @current_order.payment_method == 0
+        @current_order.update!(:status=>2) if @current_order.delivery == false and @current_order.payment_method == 1
+        @current_order.update!(:status=>3) if @current_order.delivery and @current_order.payment_method == 0
+        @current_order.update!(:status=>4) if @current_order.delivery and @current_order.payment_method == 1
 
-    @current_order.save
+        #Xóa sản phẩm trong bảng tạm
+        # temp_order.destroy
+        # selling_stock.each do |item|
+        #   item.destroy
+        # end
 
-    #2.Kiểm tra trường hợp số lượng không đủ bán [stockSummary] -> trả về lỗi!
-    selling_check_quality_before_sale selling_stock
-
-    #3.Bởi vì số lượng là hợp lý, thực hiện bán hàng, trừ số lượng tồn kho=>
-    #   Có 2 trường hợp:
-    #     Nếu [dilivery=true] thì trừ khả dĩ [available_quality].
-    #     Nếu [dilivery=false] thì trừ cả 2 khả dĩ [available_quality] và thực tế [instock_quality]
-    #   Bởi vì hàng bán ra thực tế nằm trong bản [stock] không phải [stockSummary] nên, phải *trừ theo đợt
-    #   (ví dụ có 2 đợt nhập cùng sản phẩm - và số lượng bán vượt qua một đợt thì sẽ phải trừ cả 2 đợt để cho đủ số sản phẩm)
-    selling_stock.each do |item|
-    stocking_items = Product.where(product_code: item['product_code'], skull_id:item['skull_id'], warehouse_id: item['warehouse_id']).where('available_quality > ?', 0)
-    #Trừ số lượng sản phẩm trong bảng Product
-    subtract_quality_on_sale stocking_items, item, @current_order, @current_order.delivery, @current_order.bill_discount
-    #4.Cập nhật hóa đơn.
-    #   1.Thêm các record vào bảng [OrderDetails] với id của hóa đơn đang tạo! (tức là thêm chi tiết vào cho hóa đơn)
-    #   2.Cập nhật các số liệu khác: tổng tiền, giảm giá...
-    # @current_order.discount_cash += item['discount_cash']
-    # @current_order.total_price += item['price'] * item['sale_quality']
-    # @current_order.final_price = @current_order.total_price - (@current_order.deposit + @current_order.discount_cash)
+      end
     end
-    #Cập nhật và bảng Summary
-    metro_summary = MetroSummary.find_by_warehouse_id(@current_order.warehouse_id)
-    metro_summary.revenue -= @current_order.discount_cash  if @current_order.delivery == false
-    metro_summary.revenue_day -= @current_order.discount_cash if @current_order.delivery == false
-    metro_summary.revenue_month -= @current_order.discount_cash if @current_order.delivery == false
-
-
-
-    #Tạo phiếu giao hàng
-    if @current_order.delivery == true
-    @current_order.status = 2
-    Delivery.create!(
-        :order_id => @current_order.id,
-        :merchant_account_id => current_merchant_account.id,
-        :success => false,
-        :creation_date => @current_order.created_at,
-        :delivery_date => @current_order.updated_at,
-        :delivery_address => 'Ho Chi Minh',
-        :contact_name => 'Sang',
-        :contact_phone => '0123456789',
-        :transportation_fee => 200,
-        :comment => 'Giao Hang Tan Noi',
-        :status => 0
-    )
-    else
-      @current_order.status = 1
-    end
-    #Cập nhật phiếu Order
-    @current_order.save
-    respond_to do |format|
-        format.html { redirect_to @current_order, notice: 'Export detail was successfully created.' }
-        format.json { render :json => @current_order, status: :created, location: @current_order }
-    end
-
-
-
   end
-
-  # PATCH/PUT /orders/1
-  # PATCH/PUT /orders/1.json
   def update
     respond_to do |format|
       if @order.update(order_params)
@@ -139,9 +116,6 @@ class OrdersController < MerchantApplicationController
       end
     end
   end
-
-  # DELETE /orders/1
-  # DELETE /orders/1.json
   def destroy
     @order.destroy
     respond_to do |format|
@@ -174,79 +148,52 @@ class OrdersController < MerchantApplicationController
         end
       }
     end
-
-
-
-      #is_delivery_sale == false là bán trực tiếp
-    def subtract_quality_on_sale (stocking_items, selling_item, current_order, is_delivery_sale, bill_discount)
+    #selling_item trong bảng temp_order_detail
+    #stocking_items trong bảng Product
+    def subtract_quality_on_sales (stocking_items, selling_item)
       transactioned_quality = 0
-      #Tìm Bang Metro_Summary
-      metro_summary = MetroSummary.find_by_warehouse_id(@current_order.warehouse_id)
-      stocking_items.each do |stock|
-        #số lượng còn phải lấy = là số lượng tổng - số lượng đã lấy
-        required_quality = selling_item['sale_quality'] - transactioned_quality
-
-        #Nếu như số lượng cần lấy [stock.available_quality] có đủ trong kho,
-        #Nếu đợt hàng có đủ s.phẩm thì lấy đúng số lượng cần lấy, không đủ thì lấy hết những gì đang có của đợt sp!
-        takken_quality = stock.available_quality > required_quality ? required_quality : stock.available_quality
-        if bill_discount == true
-          OrderDetail.create!(
-              :order_id => current_order.id,
-              :product_id => stock.id,
+      stocking_items.each do |product|
+        required_quality = selling_item['quality'] - transactioned_quality
+        takken_quality = product.available_quality > required_quality ? required_quality : product.available_quality
+        #xử lý giảm giá(theo tong bill hay từng sản phẩm)
+        if @current_order.bill_discount
+          total_price = (takken_quality * selling_item['price'])
+          discount_percent = @current_order.discount_cash/(@current_order.total_price/100)
+          discount_cash = (discount_percent * total_price)/100
+          order_detail = OrderDetail.create!(
+              :order_id => @current_order.id,
+              :product_id => product.id,
               :name => @current_order.name,
               :quality => takken_quality,
               :price => selling_item['price'],
-              :discount_percent => 0,
-              :discount_cash => 0,
-              :total_amount => takken_quality * selling_item['price'])
+              :discount_percent => discount_percent,
+              :discount_cash => discount_cash,
+              :final_price => total_price - discount_cash
+          )
         else
-          OrderDetail.create!(
-              :order_id => current_order.id,
-              :product_id => stock.id,
+          order_detail = OrderDetail.create!(
+              :order_id => @current_order.id,
+              :product_id => product.id,
               :quality => takken_quality,
               :price => selling_item['price'],
               :discount_percent => selling_item['discount_percent'],
-              :discount_cash => (selling_item['discount_percent']*selling_item['price']*takken_quality/100),
-              :total_amount => (takken_quality * selling_item['price'])-(selling_item['discount_percent']*selling_item['price']*takken_quality/100))
-        end
-        #Tạo mới chi tiết đơn hàng với số lượng đã lấy [takken_quality]---------------------------------------------------
-
-        #trừ số lượng khả dĩ và số lượng tồn thực tế!---------------------------------------------------------------------
-        stock.available_quality -= takken_quality
-        stock.instock_quality -= takken_quality if is_delivery_sale == false
-        stock.save()
-
-        #Cong Revenue vào bảng MetroSummary
-        if bill_discount == true
-          total_amount = (takken_quality * selling_item['price'])
-        else
-          total_amount = (takken_quality * selling_item['price']) - selling_item['discount_cash']
+              :discount_cash => (selling_item['discount_percent'] * (takken_quality * selling_item['price'])/100),
+              :final_price => (takken_quality * selling_item['price']) - (selling_item['discount_percent'] * (takken_quality * selling_item['price'])/100)
+          )
         end
 
-        metro_summary.revenue += total_amount  if is_delivery_sale == false
-        metro_summary.revenue_day += total_amount if is_delivery_sale == false
-        metro_summary.revenue_month += total_amount if is_delivery_sale == false
+        order_detail.update!(:status=>1) if @current_order.delivery == false and @current_order.payment_method == 0
+        order_detail.update!(:status=>2) if @current_order.delivery == false and @current_order.payment_method == 1
+        order_detail.update!(:status=>3) if @current_order.delivery and @current_order.payment_method == 0
+        order_detail.update!(:status=>4) if @current_order.delivery and @current_order.payment_method == 1
 
-        #Cộng dồn số lượng của đợt trước (nếu có) với số lượng vừa lấy khỏi kho!
+        #Trừ sản phẩm vào bảng Product(ko trừ nếu có giao hàng)
+        product.available_quality -= takken_quality
+        product.instock_quality -= takken_quality if @current_order.delivery == false
+        product.save()
         transactioned_quality += takken_quality
-
-        #Nếu như đủ hàng (takken_quality == item['quality']),ngừng lấy thêm từ các record phía sau => kết thúc vòng lặp!
         if transactioned_quality == selling_item['sale_quality'] then break end
       end
-
-      #Cập nhật trừ sản phẩm vào bảng ProductSummary
-      stocking_item = @Product_Summary.find(selling_item['id'])
-      stocking_item.quality -= selling_item['sale_quality']
-      stocking_item.save
-
-      #Chỉ tru so luong khi is_delivery_sale = true
-      metro_summary.stock_count -= selling_item['sale_quality'] if is_delivery_sale == false
-      metro_summary.sale_count += selling_item['sale_quality'] if is_delivery_sale == false
-      metro_summary.sale_count_day += selling_item['sale_quality'] if is_delivery_sale == false
-      metro_summary.sale_count_month += selling_item['sale_quality'] if is_delivery_sale == false
-      #Cập nhật vào Bảng MetroSummary
-      metro_summary.save()
-
       return transactioned_quality == selling_item['sale_quality']
     end
 

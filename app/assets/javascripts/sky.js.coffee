@@ -28,6 +28,14 @@ Sky.config ['$routeProvider', ($routeProvider) ->
       templateUrl: '../assets/sales/sale.html'
       controller: 'saleCtrl'
       controllerAs: 'saleCtrl'
+    }).when('/sale/delivery', {
+      templateUrl: '../assets/sales/delivery.html'
+      controller: 'deliveryCtrl'
+      controllerAs: 'deliveryCtrl'
+    }).when('/sale/return', {
+      templateUrl: '../assets/sales/return.html'
+      controller: 'returnCtrl'
+      controllerAs: 'returnCtrl'
     }).when('/post/:postId',  {
       templateUrl: '../assets/home/post.html'
       controller: 'Sky.postCtrl'

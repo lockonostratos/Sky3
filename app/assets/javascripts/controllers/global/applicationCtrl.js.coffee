@@ -21,6 +21,14 @@ Sky.controller 'applicationCtrl', ['$routeParams', '$location', '$scope', 'Commo
     url: '/sale'
     icon: 'fa fa-shopping-cart'
   ,
+    title: 'Giao Hàng'
+    url: '/sale/delivery'
+    icon: 'fa fa-shopping-cart'
+  ,
+    title: 'Trả Hàng'
+    url: '/sale/return'
+    icon: 'fa fa-shopping-cart'
+  ,
     title: 'Nhập kho'
     url: '/warehouse/import'
     icon: 'fa fa-download'

@@ -21,9 +21,12 @@ class TempOrder < ActiveRecord::Base
       self.discount_voucher = 0
       order_details.each do |order_detail|
         self.total_price += order_detail.quality * order_detail.price
-        self.bill_discount ?
-            self.final_price = self.total_price :
-            self.final_price = self.total_price - order_detail.discount_cash
+        if self.bill_discount
+          self.final_price = self.total_price
+        else
+          self.discount_cash += order_detail.discount_cash
+          self.final_price = self.total_price - self.discount_cash
+        end
       end
     end
   end

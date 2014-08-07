@@ -1,0 +1,26 @@
+<div class="row no-margin">
+  <table class="table table-condensed table-hover">
+    <thead>
+    <th>Tên Order</th>
+    <th>Tên Người Liên Lạc</th>
+    <th>Số Điện Thoại</th>
+    <th>Địa Chỉ Giao Hàng</th>
+    <th>Ngày Đặt Hàng</th>
+    <th>Ngày Giao Hàng</th>
+    <th>Phí Vận Chuyển</th>
+    <th>Ghi Chú</th>
+    <th>Tình Trạng</th>
+    </thead>
+    <tr ng-repeat="item in saleCtrl.tabDetails | orderBy:'price'">
+      <td>{{item.name}}</td>
+      <td>{{item.productCode}}</td>
+      <td>{{item.skullId}}</td>
+      <td>{{item.price}}</td>
+      <td>{{item.quality}}</td>
+      <td>{{saleCtrl.currentTab._discountPercent || item.discountPercent}}</td>
+      <td>{{item.discountCash}}</td>
+      <td>{{item.finalPrice}}</td>
+      <td><input type="button" value="X" ng-click="saleCtrl.removeSellingProduct(item, $index)"></td>
+    </tr>
+  </table>
+</div>
