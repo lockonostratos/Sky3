@@ -1,3 +1,9 @@
 @mixin center-gradial($color, $lighten: 20) {
   background-image: radial-gradient(circle at 50% 50%, lighten($color, $lighten), $color);
 }
+
+@mixin clear-fix {
+  &:before, &:after {
+    content: " "; display: table;
+  } &:after { clear: both; }
+}

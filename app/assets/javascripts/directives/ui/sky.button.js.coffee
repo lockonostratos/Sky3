@@ -7,8 +7,11 @@ Sky.directive 'skyButton', ->
       icon: '@'
       rightIcon: '='
       color: '@'
+      disabled: '='
 
     controller: ($scope, $element, $attrs) ->
-      $scope.hasIcon = $scope.icon != undefined
+      $scope.hasIcon = $scope.icon isnt undefined
+      $scope.hasCaption = $scope.caption isnt undefined
+
       $scope.colorClass = $scope.color ? 'sky'
-      if $scope.colorClass is 'shadow' then $scope.colorClass = 'sky shadow'
+      $scope.colorClass = 'sky shadow' if $scope.colorClass is 'shadow'

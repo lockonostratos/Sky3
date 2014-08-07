@@ -7,7 +7,7 @@ class Sky.Style
   @Themes: ['green', 'light-green', 'yellow', 'orange', 'blue', 'dark-blue', 'lime', 'pink', 'red', 'purple', 'dark',
              'gray', 'magenta', 'teal', 'turquoise', 'green-sea', 'emeral', 'nephritis', 'peter-river', 'belize-hole',
              'amethyst', 'wisteria', 'wet-asphalt', 'midnight-blue', 'sun-flower', 'carrot', 'pumpkin', 'alizarin',
-             'pomegranate', 'clouds', 'silver', 'concrete', 'asbestos']
+             'pomegranate', 'clouds', 'sky', 'silver', 'concrete', 'asbestos']
 
   @RandomColor: => @Themes[Math.floor(Math.random() * @Themes.length)]
 

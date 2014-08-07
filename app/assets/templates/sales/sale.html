@@ -2,16 +2,18 @@
          delete="saleCtrl.deleteTab(tab)" change="saleCtrl.selectTab(tab)"></sky-tab>
 
 <div class="row no-margin">
-  <sky-select options="saleCtrl.saleAccounts" model="saleCtrl.seller" color="pumpkin shadow"
+  <sky-select options="saleCtrl.saleAccounts" model="saleCtrl.seller" color="shadow" searchable="true"
               caption="email" change="saleCtrl.syncSeller(model)"></sky-select>
-  <sky-select options="saleCtrl.customers" model="saleCtrl.buyer" color="wisteria shadow"
+  <sky-select options="saleCtrl.customers" model="saleCtrl.buyer" color="shadow"
               caption="name" change="saleCtrl.syncBuyer(model)" size="20"></sky-select>
-  <input type="text" ng-model="saleCtrl.searchText" class="sky-control shadow" focusable="searchBox"
+  <input type="text" placeholder="tìm sản phẩm" ng-model="saleCtrl.searchText" class="sky-control shadow" focusable="searchBox"
          typeahead="product.caption for product in saleCtrl.allProducts | filter:$viewValue | limitTo:8"
          typeahead-on-select="saleCtrl.productFoundAction($item)" />
-  <sky-button color="lime shadow" caption="Thêm Sản Phẩm" ng-click="saleCtrl.addOrderDetail()"></sky-button>
-  <sky-button color="lime shadow" caption="Hoàn Tất" ng-click="saleCtrl.orderFinished()"></sky-button>
+
+  <sky-button color="shadow" caption="Thêm Sản Phẩm" ng-click="saleCtrl.addOrderDetail()" disabled="saleCtrl.sellingDetail == null"></sky-button>
+  <sky-button color="shadow" caption="Hoàn Tất" ng-click="saleCtrl.orderFinished()"></sky-button>
 </div>
+<br />
 <div class="row no-margin">
   Ten:               <input type="text" class="sky-control shadow" width="100px"
                             ng-model="saleCtrl.sellingDetail.name" ng-disabled=true />
@@ -103,5 +105,6 @@
                             ng-change="saleCtrl.syncBillDiscount()" />
 
   <br/>
-  {{saleCtrl.currentTab}}
+  <input type="text" ng-model="saleCtrl.test" ng-model-onblur>ss
+  {{saleCtrl.test}}
 </div>

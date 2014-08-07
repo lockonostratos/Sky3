@@ -9,6 +9,7 @@ Sky.directive 'skySelect', ->
       color: '@'
       width: '@'
       change: '&'
+      disabled: '='
 
     controller: ($scope, $element, $attrs) ->
       $scope.isOpen = false

@@ -3,6 +3,7 @@ Sky.controller 'applicationCtrl', ['$routeParams', '$location', '$scope', 'Commo
   Session.get('current_merchant_user').then (data) -> Common.currentMerchantAccount = data
   @Common = Common
 
+  @colors = Sky.Style.Themes
   @showMenu = true
   @collapsedMode = false
   @name = 'Enterprise Dual Strategy'

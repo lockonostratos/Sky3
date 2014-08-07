@@ -2,7 +2,7 @@ sky-select {
  .btn-group {
    &.open .dropdown-toggle.btn{
      @include box-shadow(none);
-     @include border-top-radius(3px);
+     @include border-top-radius(2px);
      @include border-bottom-radius(0);
    }
 
@@ -23,7 +23,7 @@ sky-select {
      border-top: none;
      @include border-top-radius(0);
      @include border-bottom-radius(3px);
-     @include box-shadow(none);
+
      padding: 0;
      margin-top: 0;
      min-width: 0;
@@ -32,7 +32,7 @@ sky-select {
          border-bottom: solid 1px #d3d3d3;
          overflow: hidden;
          text-overflow: ellipsis;
-         padding: 3px 15px;
+         padding: 4px 15px;
        }
        &:last-child a {
          border-bottom: none;
@@ -47,21 +47,24 @@ sky-select {
 
 sky-tab {
   ul {
+    @include clear-fix;
     margin: 0; padding: 0;
+    margin-bottom: 10px;
+    border-bottom: solid 1px #c3c3c3;
     li {
-      background-color: #e2e2e2;
+      background-color: #e4e4e4;
       max-width: 150px;
-      display: inline-block;
+      display: inline; float:left;
       position: relative;
       border: solid 1px #c3c3c3;
       border-left: none;
+      margin-bottom: -1px;
       &:first-child { border-left: solid 1px #d3d3d3; }
       &.active {
         background-color: #fff;
-        border-bottom: none;
-        border-top: solid 1px #c3c3c3;
+        border-bottom-color: transparent;
       }
-      &:hover { background-color: #e6e6e6; }
+      &:not(.active):hover { background-color: #e6e6e6; }
       a {
         padding: 8px 35px 5px 12px;
         display: block;
@@ -69,6 +72,7 @@ sky-tab {
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
+        text-transform: uppercase;
         &:focus { outline-style: none; -moz-outline-style:none; }
       }
       span {
@@ -80,7 +84,7 @@ sky-tab {
         color: #ccc;
         &:hover {
           color: #fff;
-          @include border-radius(1px);
+          @include border-radius(3px);
           background-color: $pumpkin;
         }
       }
@@ -88,8 +92,7 @@ sky-tab {
     .new-button {
       background-color: #fff;
       border: solid 1px #d8d8d8;
-      border-left: none;
-      margin-left: -3px;
+      margin-left: 5px;
       a { padding: 8px 22px 5px 12px; }
       &:hover {
         background: rgba(255,255,255,0.2);

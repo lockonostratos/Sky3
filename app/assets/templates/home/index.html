@@ -3,3 +3,10 @@
   <h2>{{ post.title }}</h2>
   <p>{{ post.contents }}</p>
 </div>
+
+<sky-button icon="fa fa-trash-o" color="pumpkin shadow"></sky-button>
+<span ng-repeat="color in application.colors" style="padding: 0 5px 15px 0; display: inline-block">
+  <sky-button caption="{{color}}" icon="fa fa-pencil" color="{{color}} shadow"></sky-button>
+  <sky-button icon="fa fa-pencil" color="{{color}} shadow"></sky-button>
+  <sky-button caption="{{color}}" color="{{color}} shadow"></sky-button>
+</span>

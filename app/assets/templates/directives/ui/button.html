@@ -1,4 +1,4 @@
-<button class="{{colorClass}} btn" ng-class="{'btn-labeled': hasIcon}">
+<button class="{{colorClass}} btn" ng-class="{'btn-labeled': hasIcon && hasCaption}" ng-disabled="disabled">
     {{rightIcon ? caption : ''}}<span class="btn-label {{rightIcon ? 'right' : 'left'}}">
     <i class="{{icon}}" ng-show="hasIcon"></i>
   </span>{{rightIcon ? '' : caption}}

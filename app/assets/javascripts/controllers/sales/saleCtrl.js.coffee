@@ -49,9 +49,7 @@ Sky.controller 'saleCtrl', ['focus', '$routeParams','$http', 'Common', 'Product'
       order.temp_order_id = @currentTab.id
       order.save()
 
-
-
-
+    @test = 1
 
     @productFoundAction = (item) =>
       ProductSummary.get(item.id).then (data) =>
