@@ -1,6 +1,12 @@
 Sky.controller 'applicationCtrl', ['$routeParams', '$location', '$scope', 'Common', 'Session', 'MerchantAccount'
 ($routeParams, $location, $scope, Common, Session, MerchantAccount) ->
-  Session.get('current_merchant_user').then (data) -> Common.currentMerchantAccount = data
+
+
+  Session.get('current_merchant_user').then (data) =>
+    Common.currentMerchantAccount = data
+    Common.currentMerchantAccount.avatar = '/assets/Son.jpg'
+    @Author = Common.currentMerchantAccount
+
   @Common = Common
 
   @colors = Sky.Style.Themes

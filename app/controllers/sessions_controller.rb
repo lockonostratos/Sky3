@@ -25,11 +25,9 @@ class SessionsController < MerchantApplicationController
       else
         cookies[:auth_token] = account.auth_token
       end
-
       redirect_to home_path
     else
-      flash.now.alert = 'Dang nhap that bai'
-      render 'new'
+      render 'new', layout: "empty"
     end
   end
 

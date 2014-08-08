@@ -1,13 +1,18 @@
 <header ng-controller="headerCtrl as header">
   <div class="logo" ng-class="{'collapsed': application.collapsedMode}">
-    <a href="" class="navbar-brand sidebar-toggle" ng-click="application.toggleCollapse()">
-      <i class="fa fa-bars"
-         tooltip-placement="right" tooltip="{{application.collapsedMode ? 'mở rộng' : 'thu nhỏ'}}"></i>
-    </a>
+    <div class="commands ng-hide" ng-show="true">
+      <a href="" class="lime btn"><i class="fa fa-wrench"></i></a>
+    </div>
+    <span ng-class="{'collapsed': application.collapsedMode}">{{application.Author.merchant.name}}</span>
   </div>
   <nav class="navbar navbar-static-top" role="navigation" ng-class="{'collapsed': application.collapsedMode}">
     <div class="navbar-left">
       <ul class="nav navbar-nav">
+        <li>
+          <a href="" class="navbar-brand sidebar-toggle" ng-click="application.toggleCollapse()">
+            <i class="fa fa-bars"></i>
+          </a>
+        </li>
         <li><a href="/" class="home-nav"><i class="fa fa-arrow-circle-o-left fa-3x"></i></a></li>
         <li><span class="app-caption">{{application.Common.caption}}</span></li>
       </ul>

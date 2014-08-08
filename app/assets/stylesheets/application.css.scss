@@ -46,16 +46,13 @@ header {
   top: 0; right: 0; left: 0;
 
   .logo {
+    padding: 0 5px;
     float: left;
     width: $left-pane;
     height: 50px;
     color: #fff;
     font-size: 20px;
-
-    .sidebar-toggle {
-      color: #fff;
-      float: right;
-    }
+    position: relative;
 
     @include collapse-transition();
     &.collapsed { @include logo-collapsed; }
@@ -63,6 +60,28 @@ header {
     @media only screen and (max-width : 992px) {
       @include logo-collapsed;
       &.collapsed { margin-left: -$left-pane-collapsed }
+    }
+
+    span {
+      font-size: 20px;
+      padding: 12px 5px;
+      float: right;
+      text-align: right;
+      text-transform: uppercase;
+      font-weight: 300;
+      display: block;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      max-width: 160px;
+
+      @media only screen and (max-width : 992px) { display: none; }
+      &.collapsed { display: none; }
+    }
+
+    .commands {
+      float: right;
+      margin-top: 8px;
     }
   }
 
@@ -76,7 +95,7 @@ header {
     .home-nav {
       padding: 4px 10px 0 5px;
 
-      &:hover { i {color: $lime;} }
+      &:hover { i {color: $pumpkin;} }
     }
 
     .app-caption {
@@ -183,6 +202,48 @@ header {
   }
 }
 
+
+.left-side .user-info {
+  &.collapsed { padding-top: 0; }
+  @media only screen and (max-width : 992px) { padding-top: 0; }
+
+  .collapsed { display: none; }
+
+  @include clear-fix;
+  padding: 10px 0 10px 12px;
+  background: rgba(255,255,255,0.04);
+
+  .avatar {
+    @media only screen and (max-width : 992px) { display: none; }
+    float: left;
+    > img {
+      border: solid 2px #8e8e8e;
+      @include border-radius(5px);
+      width: 60px; height: 60px;
+    }
+  }
+
+  .info {
+    @media only screen and (max-width : 992px) { display: none; }
+    margin-left: 5px;
+    max-width: 90px;
+    float: left;
+    color: #fff;
+    .welcome {
+      margin: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      small { text-transform: uppercase; }
+    }
+  }
+
+  .commands {
+    float: right;
+    margin-top: 12px;
+  }
+}
+
 .right-side {
   margin-left: $left-pane;
 
@@ -223,7 +284,7 @@ header {
       color: #f6f6f6;
       background: rgba(0,0,0,0.1);
     }
-    &.active > a { box-shadow: inset 4px 0 0 0 $lime; }
+    &.active > a { box-shadow: inset 4px 0 0 0 $pumpkin; }
   }
 }
 
