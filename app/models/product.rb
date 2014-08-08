@@ -8,14 +8,22 @@ class Product < ActiveRecord::Base
   belongs_to :warehouse
   belongs_to :import
   belongs_to :skull
+
   before_create :create_summary_unless_exist
-  after_create :increase_summary_quality, :increase_metro_summary_product_stock_count
-  before_update :calculation_summary_quality, :calculation_metro_summary_stock_count
-  after_destroy :decrease_summary_quality, :decrease_metro_summary_product_stock_count
+  after_create :increase_summary_quality
+  after_destroy :decrease_summary_quality
+  before_update :calculation_summary_quality
+
+
+  after_create :increase_metro_summary_product_stock_count
+  before_update :calculation_metro_summary_stock_count
+  after_destroy :decrease_metro_summary_product_stock_count
 
   def find_product_summary
     ProductSummary.find_by(product_code: self.product_code, skull_id: self.skull_id, warehouse_id: self.warehouse_id)
   end
+
+
 
   #Bat loi View
   #validates_presence_of :product_code, :provider, :warehouse, :import, :name, :import_quality, :import_price, :import_id
@@ -39,6 +47,20 @@ class Product < ActiveRecord::Base
     end
   end
 
+  def calculation_summary_quality
+    old_product = Product.find(self.id)
+    quality = old_product.available_quality - self.available_quality
+    product_summary = find_product_summary
+    if product_summary
+      if quality > 0
+        product_summary.quality -= quality
+      else
+        product_summary.quality += quality
+      end
+      product_summary.save()
+    end
+  end
+
   def increase_summary_quality
     update_summary_quality
   end
@@ -49,14 +71,12 @@ class Product < ActiveRecord::Base
 
   def update_summary_quality(increase = true)
     product_summary = find_product_summary
-
     if product_summary
       if increase
         product_summary.quality += self.import_quality
       else
         product_summary.quality -= self.import_quality
       end
-
       product_summary.save
     end
   end
@@ -71,11 +91,11 @@ class Product < ActiveRecord::Base
   end
 
   def increase_metro_summary_product_stock_count
-    update_summary_quality
+    update_metro_summary_product_stock_count
   end
 
   def decrease_metro_summary_product_stock_count
-    update_summary_quality(false)
+    update_metro_summary_product_stock_count(false)
   end
 
   def update_metro_summary_product_stock_count(increase = true)
@@ -84,24 +104,9 @@ class Product < ActiveRecord::Base
       if increase
         metro_summary.stock_count += self.import_quality
       else
-        metro_summary.stock_count += self.import_quality
+        metro_summary.stock_count -= self.import_quality
       end
       metro_summary.save()
-    end
-  end
-
-
-  def calculation_summary_quality
-    old_product = Product.find(self.id)
-    quality = old_product.instock_quality - self.instock_quality
-    product_summary = find_product_summary
-    if product_summary
-      if quality > 0
-        product_summary.quality -= quality
-      else
-        product_summary.quality += quality
-      end
-      product_summary.save()
     end
   end
 

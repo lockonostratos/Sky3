@@ -11,7 +11,7 @@
          typeahead-on-select="saleCtrl.productFoundAction($item)" />
 
   <sky-button color="shadow" caption="Thêm Sản Phẩm" ng-click="saleCtrl.addOrderDetail()" disabled="saleCtrl.sellingDetail == null"></sky-button>
-  <sky-button color="shadow" caption="Hoàn Tất" ng-click="saleCtrl.orderFinished()"></sky-button>
+  <sky-button color="shadow" caption="Hoàn Tất" disabled="saleCtrl.tabDetails[0] == null" ng-click="saleCtrl.orderFinished()"></sky-button>
 </div>
 <br />
 <div class="row no-margin">
@@ -69,7 +69,10 @@
   <sky-select options="saleCtrl.transports" model="saleCtrl.transport" color="pumpkin shadow"
               caption="display" change="saleCtrl.syncTransport(model)"></sky-select>
 
-  TienThuVao<input type="number" class="sky-control shadow" ng-model="saleCtrl.currentTab.deposit"/>
+  TienThuVao<input type="number" class="sky-control shadow" ng-disabled="saleCtrl.tabDetails[0] == null"
+                   ng-model="saleCtrl.currentTab.deposit" ng-change="saleCtrl.syncDeposit()"
+                   ui-event="{ blur : 'saleCtrl.syncDeposit(true)' }"
+                   ui-keyup="{ 'enter' : 'saleCtrl.syncDeposit(true)' }"/>
 
   Giam Gia %<input type="number" class="sky-control shadow"
                    ng-disabled="!saleCtrl.currentTab.billDiscount"
@@ -86,8 +89,7 @@
   </div>
 </div>
 <div class="row no-margin">
-  <sky-select options="saleCtrl.payments" model="saleCtrl.payment" color="pumpkin shadow"
-              caption="display" change="saleCtrl.syncPayment(model)"></sky-select>{{}}
+  <sky-select options="saleCtrl.payments" model="saleCtrl.payment" color="pumpkin shadow" caption="display"></sky-select>
 
   TienThoiLai <input type="number" ng-model="saleCtrl.currentTab.currencyDebit" class="sky-control shadow" ng-disabled="true"/>
 
@@ -101,10 +103,10 @@
   TongTien<input type="number" class="sky-control shadow" ng-model="saleCtrl.currentTab.finalPrice" ng-disabled="true"/>
 
   Tinh Theo Tong Bill<input type="checkbox" class="sky-control shadow"
+                            ng-disabled="saleCtrl.tabDetails[0] == null"
                             ng-model="saleCtrl.currentTab.billDiscount"
                             ng-change="saleCtrl.syncBillDiscount()" />
 
   <br/>
-  <input type="text" ng-model="saleCtrl.test" ng-model-onblur>ss
-  {{saleCtrl.test}}
+  {{saleCtrl.currentTab}}
 </div>

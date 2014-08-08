@@ -445,16 +445,16 @@ ActiveRecord::Schema.define(version: 20140711100003) do
   end
 
   create_table "order_details", force: true do |t|
-    t.integer  "order_id",                                              null: false
+    t.integer  "order_id",                                                null: false
     t.string   "name"
-    t.integer  "product_id",                                            null: false
-    t.integer  "quality",                                               null: false
-    t.integer  "return_quality",                            default: 0, null: false
-    t.decimal  "price",            precision: 10, scale: 0,             null: false
-    t.decimal  "discount_cash",    precision: 10, scale: 0, default: 0, null: false
-    t.decimal  "discount_percent", precision: 10, scale: 0, default: 0, null: false
-    t.decimal  "final_price",      precision: 10, scale: 0, default: 0, null: false
-    t.integer  "status",                                    default: 0, null: false
+    t.integer  "product_id",                                              null: false
+    t.integer  "quality",                                                 null: false
+    t.integer  "return_quality",                            default: 0,   null: false
+    t.decimal  "price",            precision: 10, scale: 0,               null: false
+    t.decimal  "discount_cash",    precision: 10, scale: 0, default: 0,   null: false
+    t.float    "discount_percent",                          default: 0.0, null: false
+    t.decimal  "final_price",      precision: 10, scale: 0, default: 0,   null: false
+    t.integer  "status",                                    default: 0,   null: false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -473,6 +473,7 @@ ActiveRecord::Schema.define(version: 20140711100003) do
     t.decimal  "total_price",      precision: 10, scale: 0,                 null: false
     t.decimal  "discount_voucher", precision: 10, scale: 0, default: 0,     null: false
     t.decimal  "discount_cash",    precision: 10, scale: 0, default: 0,     null: false
+    t.float    "discount_percent",                          default: 0.0,   null: false
     t.decimal  "final_price",      precision: 10, scale: 0, default: 0,     null: false
     t.decimal  "deposit",          precision: 10, scale: 0, default: 0,     null: false
     t.decimal  "debt",             precision: 10, scale: 0, default: 0,     null: false
@@ -601,19 +602,19 @@ ActiveRecord::Schema.define(version: 20140711100003) do
   end
 
   create_table "temp_order_details", force: true do |t|
-    t.integer  "temp_order_id",                                              null: false
-    t.integer  "product_summary_id",                                         null: false
-    t.string   "name",                                                       null: false
-    t.string   "product_code",                                               null: false
-    t.integer  "skull_id",                                                   null: false
-    t.integer  "warehouse_id",                                               null: false
-    t.integer  "quality",                                        default: 0, null: false
-    t.decimal  "price",                 precision: 10, scale: 0, default: 0, null: false
-    t.decimal  "discount_cash",         precision: 10, scale: 0, default: 0, null: false
-    t.decimal  "discount_percent",      precision: 10, scale: 0, default: 0, null: false
-    t.decimal  "temp_discount_percent", precision: 10, scale: 0, default: 0, null: false
-    t.decimal  "total_price",           precision: 10, scale: 0, default: 0, null: false
-    t.decimal  "final_price",           precision: 10, scale: 0, default: 0, null: false
+    t.integer  "temp_order_id",                                                null: false
+    t.integer  "product_summary_id",                                           null: false
+    t.string   "name",                                                         null: false
+    t.string   "product_code",                                                 null: false
+    t.integer  "skull_id",                                                     null: false
+    t.integer  "warehouse_id",                                                 null: false
+    t.integer  "quality",                                        default: 0,   null: false
+    t.decimal  "price",                 precision: 10, scale: 0, default: 0,   null: false
+    t.decimal  "discount_cash",         precision: 10, scale: 0, default: 0,   null: false
+    t.decimal  "discount_percent",      precision: 10, scale: 0, default: 0,   null: false
+    t.float    "temp_discount_percent",                          default: 0.0, null: false
+    t.decimal  "total_price",           precision: 10, scale: 0, default: 0,   null: false
+    t.decimal  "final_price",           precision: 10, scale: 0, default: 0,   null: false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -632,6 +633,7 @@ ActiveRecord::Schema.define(version: 20140711100003) do
     t.decimal  "total_price",      precision: 10, scale: 0, default: 0,     null: false
     t.decimal  "discount_voucher", precision: 10, scale: 0, default: 0,     null: false
     t.decimal  "discount_cash",    precision: 10, scale: 0, default: 0,     null: false
+    t.float    "discount_percent",                          default: 0.0,   null: false
     t.decimal  "final_price",      precision: 10, scale: 0, default: 0,     null: false
     t.decimal  "deposit",          precision: 10, scale: 0, default: 0,     null: false
     t.decimal  "currency_debit",   precision: 10, scale: 0, default: 0,     null: false
@@ -644,7 +646,9 @@ ActiveRecord::Schema.define(version: 20140711100003) do
     t.integer  "merchant_id"
     t.integer  "branch_id"
     t.integer  "warehouse_id"
-    t.decimal  "cash",           precision: 10, scale: 0
+    t.decimal  "total_cash",     precision: 10, scale: 0
+    t.decimal  "deposit_cash",   precision: 10, scale: 0
+    t.decimal  "debt_cash",      precision: 10, scale: 0
     t.text     "decription"
     t.datetime "created_at"
     t.datetime "updated_at"

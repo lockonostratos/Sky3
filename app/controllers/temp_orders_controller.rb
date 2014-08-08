@@ -68,7 +68,7 @@ class TempOrdersController < MerchantApplicationController
     # Never trust parameters from the scary internet, only allow the white list through.
     def temp_order_params
       params.require(:temp_order).permit(:branch_id, :warehouse_id, :seller_id, :buyer_id, :creator_id, :name, :return,
-      :payment_method, :delivery, :bill_discount, :total_price, :discount_voucher, :discount_cash, :final_price,
+      :payment_method, :delivery, :bill_discount, :total_price, :discount_voucher, :discount_cash, :discount_percent, :final_price,
       :deposit, :currency_debit)
     end
 end

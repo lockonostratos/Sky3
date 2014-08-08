@@ -6,8 +6,8 @@ class Transaction < ActiveRecord::Base
   belongs_to :owner, class_name: 'Customer', foreign_key: 'owner_id'
   has_many :transaction_details
 
-  # enum type: [:import, :inventory, :order_id, :newid]
-  # enum status: [:closed, :tracking,  :cancelled]
+  enum group: [:import, :inventory, :sales]
+  enum status: [:closed, :tracking,  :cancelled]
 
   # def find_parent
   #   if self.import?

@@ -363,6 +363,8 @@ class InitializeDatabase < ActiveRecord::Migration
     #TransactionDetails.
     #parent_id [transaction_id]
     #cash
+    #cash_deposit
+    #cash_debt
     #description => nullable
     #merchant, branch, warehouse
     create_table :transactions do |t|
@@ -385,7 +387,9 @@ class InitializeDatabase < ActiveRecord::Migration
       t.belongs_to :branch
       t.belongs_to :warehouse
 
-      t.decimal    :cash
+      t.decimal    :total_cash
+      t.decimal    :deposit_cash
+      t.decimal    :debt_cash
       t.text       :decription
       t.timestamps
     end
@@ -408,6 +412,7 @@ class InitializeDatabase < ActiveRecord::Migration
       t.decimal :total_price, :null => false                       #Tổng giá trị hóa đơn chưa giảm giá
       t.decimal :discount_voucher, :null => false,:default => 0   #giam gia theo phiếu giảm giá
       t.decimal :discount_cash, :null => false, :default => 0      #giam gia tinh bang tien mat
+      t.float :discount_percent, :null => false, :default => 0    #giam gia %
       t.decimal :final_price, :null => false, :default => 0          #Tổng tiền còn lại khi trừ giảm giá.
 
       t.decimal :deposit,     :null => false, :default => 0              #số tiền trả trước
@@ -426,7 +431,7 @@ class InitializeDatabase < ActiveRecord::Migration
       t.integer :return_quality, :null => false, :default => 0
       t.decimal :price, :null => false
       t.decimal :discount_cash, :null => false, :default => 0
-      t.decimal :discount_percent, :null => false, :default => 0
+      t.float :discount_percent, :null => false, :default => 0
       t.decimal :final_price, :null => false, :default => 0
       #tinh trang don hang
       #1 giao dich trực tiếp thành công (ko nợ)
@@ -511,6 +516,7 @@ class InitializeDatabase < ActiveRecord::Migration
       t.decimal :total_price, :null => false, :default => 0             #Tổng giá trị hóa đơn chưa giảm giá
       t.decimal :discount_voucher, :null => false, :default => 0        #giam gia theo phiếu giảm giá
       t.decimal :discount_cash, :null => false, :default => 0           #giam gia tinh bang tien mat
+      t.float :discount_percent, :null => false, :default => 0        #giam gia %
       t.decimal :final_price, :null => false, :default=>0               #Tổng tiền còn lại khi trừ giảm giá.
 
       t.decimal :deposit, :null => false, :default=>0                   #số tiền trả trước
@@ -533,7 +539,7 @@ class InitializeDatabase < ActiveRecord::Migration
 
       t.decimal :discount_cash, :null => false, :default => 0
       t.decimal :discount_percent, :null => false, :default => 0
-      t.decimal :temp_discount_percent, :null => false, :default => 0
+      t.float :temp_discount_percent, :null => false, :default => 0
       t.decimal :total_price, :null => false, :default => 0
       t.decimal :final_price, :null => false, :default => 0
 

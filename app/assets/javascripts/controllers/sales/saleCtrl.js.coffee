@@ -37,11 +37,17 @@ Sky.controller 'saleCtrl', ['focus', '$routeParams','$http', 'Common', 'Product'
     @syncTransport = (model) => @currentTab.delivery = model.value; @currentTab.update()
     @syncPayment = (model) => @currentTab.paymentMethod = model.value; @currentTab.update()
     @syncDiscountOrder = => @syncOnChange @currentTab, 'discountCash'
+    @syncBillDiscount = => @currentTab.update().then (data) => @reloadOrderOf @currentTab, data
+    @syncDeposit = (item)=>
+      @currentTab.deposit = @calculation_item_range_min_max @currentTab.deposit, 0
+      @currentTab.currencyDebit = @currentTab.deposit - @currentTab.finalPrice
+      if @currentTab.currencyDebit > 0
+        @payment = @payments.find {value: 0}
+      else
+        @payment = @payments.find {value: 1}
+      @currentTab.update() if item
 
-    @syncBillDiscount = =>
-      @currentTab.update().then (data) =>
-        @currentTab._discountPercent = @currentTab.discountPercent if @currentTab.billDiscount
-        @reloadTabDiscount(@currentTab)
+
 
     @syncOnChange = (obj, key, oldKey = null) =>
       oldKey ?= 'old' + key.charAt(0).toUpperCase() + key.slice(1)
@@ -69,7 +75,7 @@ Sky.controller 'saleCtrl', ['focus', '$routeParams','$http', 'Common', 'Product'
       @searchText = tab.searchText
       @sellingProduct = tab.sellingProduct
       @sellingDetail = tab.sellingDetail
-      @reloadTabDiscount tab
+      @currentTab = tab
       @reloadTabDetails tab
 
 
@@ -104,7 +110,7 @@ Sky.controller 'saleCtrl', ['focus', '$routeParams','$http', 'Common', 'Product'
       currentIndex = @tabHistories.indexOf foundTab
       @tabHistories.removeAt currentIndex
       @currentTab = @tabHistories[currentIndex] ? @tabHistories[currentIndex - 1]
-      console.log @currentTab
+      @reloadTabDetails @currentTab
       @addTab() if @tabHistories.length is 0
 
     @newEmptyTab = (name, branch_id = null, warehouse_id = null, creator_id = null, seller_id =null, buyer_id = null) =>
@@ -133,23 +139,37 @@ Sky.controller 'saleCtrl', ['focus', '$routeParams','$http', 'Common', 'Product'
       result.totalPrice = result.finalPrice  = source.price;
       result
 
-    @reloadTabDiscount= (tab)=>
-      @currentTab = tab
-      if @currentTab.discountCash == 0
-        @currentTab.discountPercent = 0
-      else
-        @currentTab.discountPercent = @currentTab.discountCash/@currentTab.totalPrice*100
-      @currentTab
+#    @reloadTabDiscount= (tab)=>
+#      @currentTab = tab
+#      if @currentTab.discountCash == 0
+#        @currentTab.discountPercent = 0
+#      else
+#        @currentTab.discountPercent = @currentTab.discountCash/@currentTab.totalPrice*100
+#      @currentTab
 
-    #cập nhật mới cập nhật vào @currentTab còn @tabHistories chưa cập nhật
-    @updateSummaries = => TempOrder.get(@currentTab.id).then (data) =>  @currentTab = data; @reloadTabDiscount(@currentTab)
+    @updateSummaries = => TempOrder.get(@currentTab.id).then (data) =>  @reloadOrderOf @currentTab, data
 
-    @reloadOrderDetailOf = (oldOrder, newOrder) =>
-      oldOrder.quality = newOrder.quality
+    @reloadOrderDetailOf = (oldOrderDetail, newOrderDetail) =>
+      oldOrderDetail.quality = newOrderDetail.quality
+      oldOrderDetail.discountCash = newOrderDetail.discountCash
+      oldOrderDetail.finalPrice = newOrderDetail.finalPrice
+
+    @reloadOrderOf = (oldOrder, newOrder) =>
+      oldOrder.totalPrice = newOrder.totalPrice
       oldOrder.discountCash = newOrder.discountCash
+      if oldOrder.discountCash == 0
+        oldOrder.discountPercent = 0
+      else
+        oldOrder.discountPercent = oldOrder.discountCash/oldOrder.totalPrice*100
+      oldOrder.deposit = newOrder.deposit
+      oldOrder.currencyDebit = newOrder.currencyDebit
       oldOrder.finalPrice = newOrder.finalPrice
 
-    @removeSellingProduct = (item, index)=> item.delete(); @tabDetails.splice index, 1; @reloadTabDiscount(@currentTab)
+
+    @removeSellingProduct = (item, index)=>
+      item.delete().then (data) =>
+        @tabDetails.splice index, 1
+        @updateSummaries()
 
     @calculation_currentTab = (item, boolean)=>
       item.discountCash = @calculation_item_range_min_max(item.discountCash, 0, item.totalPrice)
