@@ -159,6 +159,7 @@ class OrdersController < MerchantApplicationController
         end
       }
     end
+
     #selling_item trong bảng temp_order_detail
     #stocking_items trong bảng Product
     def subtract_quality_on_sales (stocking_items, selling_item)

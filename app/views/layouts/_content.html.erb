@@ -1,8 +1,22 @@
 <div class="wrapper">
   <div class="left-side" ng-class="{'collapsed': application.collapsedMode}">
+    <div class="user-info" ng-class="{'collapsed': application.collapsedMode}">
+      <div class="avatar" ng-class="{'collapsed': application.collapsedMode}">
+        <img ng-src="{{application.Author.avatar}}">
+      </div>
+      <div class="info" ng-class="{'collapsed': application.collapsedMode}">
+        <h4 class="welcome">
+          <small class="color-lime">Quản lý</small> <br />
+          {{application.Author.account.displayName}}
+        </h4>
+      </div>
+      <div class="commands">
+        <a href="/signout" class="pumpkin btn" ><i class="fa fa-power-off"></i></a>
+      </div>
+    </div>
     <ul class="sidebar-menu">
       <li ng-class="{active: application.currentUrl == item.url}" ng-repeat="item in application.navs">
-        <a href="#{{item.url}}">
+        <a href="#{{item.url}}" tooltip="{{item.title}}" tooltip-placement="{{application.collapsedMode ? 'right' : 'left'}}" tooltip-append-to-body="true">
           <i ng-class="item.icon"></i>
           <span>{{item.title}}</span>
         </a>

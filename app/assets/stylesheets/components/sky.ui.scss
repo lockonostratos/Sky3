@@ -83,9 +83,7 @@ sky-tab {
         cursor: pointer;
         color: #ccc;
         &:hover {
-          color: #fff;
-          @include border-radius(3px);
-          background-color: $pumpkin;
+          color: $pumpkin;
         }
       }
     }
@@ -97,8 +95,7 @@ sky-tab {
       &:hover {
         background: rgba(255,255,255,0.2);
         span {
-          color: #333;
-          background-color: transparent;
+          color: $lime;
         }
       }
     }
