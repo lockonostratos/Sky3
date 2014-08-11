@@ -12,12 +12,12 @@
          typeahead-on-select="saleCtrl.productFoundAction($item)" />
 
   <sky-button color="shadow" caption="Thêm Sản Phẩm" ng-click="saleCtrl.addOrderDetail()" disabled="saleCtrl.sellingDetail == null"></sky-button>
-  <sky-button color="shadow" caption="Hoàn Tất" disabled="saleCtrl.tabDetails[0] == null" ng-click="saleCtrl.orderFinished()"></sky-button>
+  <sky-button color="shadow" caption="Hoàn Tất" disabled="saleCtrl.checkSubmitFrom()" ng-click="saleCtrl.orderFinished()"></sky-button>
 </div>
 <br />
 <div class="row no-margin">
   Ten:               <input type="text" class="sky-control shadow" width="100px"
-                            ng-model="saleCtrl.sellingDetail.name" ng-disabled=true />
+                            ng-model="saleCtrl.sellingDetail.name" ng-disabled="" />
 
   Gia:               <input type="text" class="sky-control shadow" width="100px"
                             ng-model="saleCtrl.sellingDetail.price" ng-disabled=true />
@@ -66,11 +66,21 @@
     </tr>
   </table>
 </div>
+<div collapse="!saleCtrl.transport.value">
+  <div class="well well-lg" >
+      Tên người nhận: <input type="text" class="sky-control shadow" ng-model="saleCtrl.delivery.contact_name" />
+      Số ĐT:          <input type="text" class="sky-control shadow" ng-model="saleCtrl.delivery.contact_phone" />
+      Địa Chỉ:        <input type="text" class="sky-control shadow" ng-model="saleCtrl.delivery.delivery_address" />
+      Ngày Giao:      <input type="text" class="sky-control shadow" ng-model="saleCtrl.delivery.delivery_date" />
+      PVC:            <input type="text" class="sky-control shadow" ng-model="saleCtrl.delivery.transportation_fee" />
+      Ghi Chú:        <input type="text" class="sky-control shadow" ng-model="saleCtrl.delivery.comment" />
+  </div>
+</div>
 <div class="row no-margin">
   <sky-select options="saleCtrl.transports" model="saleCtrl.transport" color="pumpkin shadow"
               caption="display" change="saleCtrl.syncTransport(model)"></sky-select>
 
-  TienThuVao<input type="number" class="sky-control shadow" ng-disabled="saleCtrl.tabDetails[0] == null"
+  TienThuVao<input type="number" class="sky-control shadow" min="0" ng-disabled="saleCtrl.tabDetails[0] == null"
                    ng-model="saleCtrl.currentTab.deposit" ng-change="saleCtrl.syncDeposit()"
                    ui-event="{ blur : 'saleCtrl.syncDeposit(true)' }"
                    ui-keyup="{ 'enter' : 'saleCtrl.syncDeposit(true)' }"/>

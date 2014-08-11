@@ -5,6 +5,15 @@ class DeliveriesController < MerchantApplicationController
     @deliveries = Delivery.where(order_id: all_order_on_merchant(current_merchant_account.merchant_id))
   end
 
+  def deliveries_of
+    warehouse_id = if params[:warehouse_id] then params[:warehouse_id] else current_merchant_account.current_warehouse_id end
+    if params[:merchant_account_id]
+      @deliveries = Delivery.where(warehouse_id: warehouse_id, merchant_account_id: params[:merchant_account_id])
+    else
+      @deliveries = Delivery.where(warehouse_id: warehouse_id)
+    end
+  end
+
   def show
   end
 
@@ -104,6 +113,6 @@ class DeliveriesController < MerchantApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def delivery_params
-      params.require(:delivery).permit(:order_id, :merchant_account_id, :success, :creation_date, :delivery_date, :delivery_address, :contact_name, :contact_phone, :transportation_fee, :comment, :status)
+      params.require(:delivery).permit(:warehouse_id, :order_id, :merchant_account_id, :success, :creation_date, :delivery_date, :delivery_address, :contact_name, :contact_phone, :transportation_fee, :comment, :status)
     end
 end

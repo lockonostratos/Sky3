@@ -4,40 +4,24 @@ class OrdersController < MerchantApplicationController
   # GET /orders.json
   def index
     @orders = Order.all
-    respond_to do |format|
-      format.html { render layout: "account" }
-      format.json { render :json => @orders }
-    end
   end
 
-  # GET /orders/1
-  # GET /orders/1.json
   def show
-    respond_to do |format|
-      format.html
-      format.json { render :json => @order }
-    end
   end
 
-  # GET /orders/new
   def new
     @order = Order.new
   end
 
   def bill_code
-
     bill_code = '{'+'"bill_code":'+'"'+orders_bill_code(params[:warehouse_id])+'"'+'}'
-
     render json: bill_code
   end
 
-  # GET /orders/1/edit
   def edit
   end
 
-
   def create_failed
-
   end
 
   def check_quality_before_sale(items) #product_summary
@@ -45,22 +29,30 @@ class OrdersController < MerchantApplicationController
     group_product_id = items.pluck(:product_summary_id).uniq #lấy id từ mảng [1,3]
     group_product_id.each do |item|
       product_summary =  ProductSummary.find(item)
-      if product_summary.quality < sum_product_quality[item]
+      if product_summary.quality < sum_product_quality[item] #thất bại dẫn tới create_failed
         @a = 1
         respond_to do |format|
           format.html { redirect_to orders_url }
           format.json { render json: @a }
         end
         break
-      end #thất bại dẫn tới create_failed
+      end
     end
   end
+
+  def check_delivery
+    delivery = params[:order]['temp_delivery']
+    delivery.delivery_date #phải lớn hơn ngày hiện tại, theo chuẩn
+
+  end
+
 
 =begin
     Pseudo
     Kiểm tra phiếu có tồn tại?
     Kiểm tra phiếu đó có chi tiết? (danh sách hàng bán)
     Kiểm tra có đủ hàng để bán?
+    Kiểm tra thông tin giao hàng (nếu có)
     -----An toàn--------->
     Thực hiện khởi tạo Order!
 =end
@@ -68,6 +60,7 @@ class OrdersController < MerchantApplicationController
     temp_order = TempOrder.find(params[:order]['temp_order_id']); if !temp_order then create_failed end
     selling_items = temp_order.details; if selling_items.length <= 0 then create_failed end
     check_quality_before_sale(selling_items)
+    # if temp_order.delivery check_delivery
     
     newOrder = temp_order.clone_to_order()
     selling_items.each do |product|
@@ -75,7 +68,7 @@ class OrdersController < MerchantApplicationController
       subtract_quality_on_sales stocking_items, product, newOrder
     end
     newOrder.update_metro_summary()
-    if newOrder.delivery then newOrder.create_new_delivery end
+    if newOrder.delivery then create_new_delivery(newOrder, params[:order]['temp_delivery']) end
     if newOrder.delivery == 0 then newOrder.status = Order.statuses[:finish] end
     if newOrder.delivery == 1 then newOrder.status = Order.statuses[:delivery] end
     newOrder.save()
@@ -169,4 +162,20 @@ class OrdersController < MerchantApplicationController
       return transactioned_quality == selling_item['quality']
     end
 
+    def create_new_delivery(order, delivery)
+    Delivery.create!(
+        :warehouse_id =>order.warehouse_id,
+        :order_id => order.id,
+        :merchant_account_id => order.creator_id,
+        :name => order.name,
+        :creation_date => order.created_at,
+        :delivery_date => delivery['delivery_date'],
+        :delivery_address => delivery['delivery_address'],
+        :contact_name => delivery['contact_name'],
+        :contact_phone => delivery['contact_phone'],
+        :transportation_fee => delivery['transportation_fee'],
+        :comment => delivery['comment'],
+        :status => 0
+    )
+  end
 end

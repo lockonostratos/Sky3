@@ -1,32 +1,26 @@
 class ProductsController < MerchantApplicationController
   before_action :set_product, only: [:show, :edit, :update, :destroy]
-  # GET /products
-  # GET /products.json
+
   def index
     warehouse_id = if params[:warehouse_id] then params[:warehouse_id] else current_merchant_account.current_warehouse_id end
     @products = Product.where(warehouse_id: warehouse_id)
   end
 
-  # GET /products/1
-  # GET /products/1.json
-  def show
-    respond_to do |format|
-      format.html { }
-      format.json { render json:@product, status: 201 }
-    end
+  def product_of
+    @products = Product.where(product_code: params[:product_code], skull_id: params[:skull_id], warehouse_id: params[:warehouse_id])
   end
 
-  # GET /products/new
+
+  def show
+  end
+
   def new
     @product = Product.new
   end
 
-  # GET /products/1/edit
   def edit
   end
 
-  # POST /products
-  # POST /products.json
   def create
     @product = Product.new(product_params)
     if @product.save
@@ -36,8 +30,6 @@ class ProductsController < MerchantApplicationController
     end
   end
 
-  # PATCH/PUT /products/1
-  # PATCH/PUT /products/1.json
   def update
     if @product.update(product_params)
       render json: @products, status: 204
@@ -46,8 +38,7 @@ class ProductsController < MerchantApplicationController
     end
   end
 
-  # DELETE /products/1
-  # DELETE /products/1.json
+
   def destroy
     @product.destroy
     respond_to do |format|

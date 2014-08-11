@@ -1,26 +1,33 @@
-<div class="row no-margin">
-  <table class="table table-condensed table-hover">
-    <thead>
-    <th>Tên Order</th>
-    <th>Tên Người Liên Lạc</th>
-    <th>Số Điện Thoại</th>
-    <th>Địa Chỉ Giao Hàng</th>
-    <th>Ngày Đặt Hàng</th>
-    <th>Ngày Giao Hàng</th>
-    <th>Phí Vận Chuyển</th>
-    <th>Ghi Chú</th>
-    <th>Tình Trạng</th>
-    </thead>
-    <tr ng-repeat="item in saleCtrl.tabDetails | orderBy:'price'">
-      <td></td>
-      <td></td>
-      <td></td>
-      <td></td>
-      <td></td>
-      <td></td>
-      <td></td>
-      <td></td>
-      <td><input type="button" value="X" ng-click="saleCtrl.removeSellingProduct(item, $index)"></td>
-    </tr>
-  </table>
-</div>
+<sky-select options="deliveryCtrl.warehouses" model="deliveryCtrl.currentWarehouse" color="pumpkin shadow"
+            caption="name" change="deliveryCtrl.changeView(model)"></sky-select>
+
+<input type="radio" ng-model="deliveryCtrl.showDelivery" value="all" ng-change="deliveryCtrl.changeView()"> All View
+<input type="radio" ng-model="deliveryCtrl.showDelivery" value="only" ng-change="deliveryCtrl.changeView()"> Only View
+<table class="table">
+  <thead>
+  <th>Mã Order</th>
+  <th>Tên Người Liên Lạc</th>
+  <th>Số Điện Thoại</th>
+  <th>Địa Chỉ Giao Hàng</th>
+  <th>Ngày Đặt Hàng</th>
+  <th>Ngày Giao Hàng</th>
+  <th>Phí Vận Chuyển</th>
+  <th>Ghi Chú</th>
+  <th>NV Giao Hàng</th>
+  <th>Tình Trạng</th>
+  </thead>
+  <tr ng-repeat="item in deliveryCtrl.deliveries">
+    <td>{{item.name}}</td>
+    <td>{{item.contactName}}</td>
+    <td>{{item.contactPhone}}</td>
+    <td>{{item.deliveryAddress}}</td>
+    <td>{{item.creationDate}}</td>
+    <td>{{item.deliveryDate}}</td>
+    <td>{{item.transportationFee}}</td>
+    <td>{{item.comment}}</td>
+    <td>chưa có</td>
+    <td>chờ</td>
+    <td><input type="button" value="Giao" ng-click="saleCtrl.removeSellingProduct(item, $index)"></td>
+
+  </tr>
+</table>

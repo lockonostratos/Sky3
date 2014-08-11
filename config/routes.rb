@@ -25,17 +25,24 @@ Rails.application.routes.draw do
     resources :product_summaries do
       collection do
         get 'import_availables'
+        get 'show_product_summary'
+      end
+    end
+    resources :products do
+      collection do
+        get 'product_of'
       end
     end
 
-    resources :products
-    resources :orders
-    resources :order_details
-    resources :deliveries
-
     resources :temp_orders
     resources :temp_order_details
-
+    resources :orders
+    resources :order_details
+    resources :deliveries do
+      collection do
+        get 'deliveries_of'
+      end
+    end
 
     resources :temp_import_details
     resources :warehouses do

@@ -84,6 +84,7 @@ ActiveRecord::Schema.define(version: 20140711100003) do
   end
 
   create_table "deliveries", force: true do |t|
+    t.integer  "warehouse_id",                                                 null: false
     t.integer  "order_id",                                                     null: false
     t.integer  "merchant_account_id",                                          null: false
     t.string   "name"

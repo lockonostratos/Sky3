@@ -1,0 +1,24 @@
+<sky-select options="listCtrl.warehouses" model="listCtrl.currentWarehouse" color="pumpkin shadow"
+            caption="name" change="listCtrl.changeCurrentWarehouse(model)"></sky-select>
+
+<div class="row no-margin">
+  <table class="table table-condensed table-hover">
+    <thead>
+    <th>Tên</th>
+    <th>Barcode</th>
+    <th>Loại</th>
+    <th>Số Lượng</th>
+    <th>Giá Bán</th>
+    </thead>
+    <tr ng-repeat="item in listCtrl.products" ng-click="listCtrl.clickTable(item)">
+      <td>{{item.name}}</td>
+      <td>{{item.productCode}}</td>
+      <td>{{item.skull.unit}} - {{item.skull.skull01}} </td>
+      <td>{{item.quality}}</td>
+      <td>{{item.price}}</td>
+
+    </tr>
+  </table>
+</div>
+
+
