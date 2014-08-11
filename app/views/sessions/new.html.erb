@@ -1,14 +1,17 @@
 <%= form_tag ({:action => 'create'}), :class => 'signin-panel' do %>
-    <h2 class="heading">đăng nhập eds <%= "nhớ mày rồi #{current_account.email}" if current_account %></h2>
+    <span class="heading">
+      đăng nhập eds <br />
+      <extra>đại lý</extra>
+    </span>
     <div class="signin-wrap">
-      <div class="gray signin-row">
-        <%= text_field_tag :email, params[:email], :placeholder => 'Địa chỉ email' %>
-        <%= password_field_tag :password, params[:password], :placeholder => 'Mật khẩu' %>
+      <div class="signin-inputs">
+        <%= text_field_tag :email, params[:email], :placeholder => 'địa chỉ email' %>
+        <%= password_field_tag :password, params[:password], :placeholder => 'mật khẩu' %>
       </div>
-      <div class="signin-row">
+      <div class="signin-buttons">
         <label class="checkbox">
           <%= check_box_tag :remember_me, 1, params[:remember_me] %> Nhớ tài khoản
-            <span class="pull-right">
+            <span class="right-float">
               <a href="#" data-toggle="modal"> Quên mật khẩu?</a>
             </span>
         </label>
@@ -17,7 +20,7 @@
       </div>
     </div>
 
-    <div class="registration pull-right">
+    <div class="registration right-float">
       Chưa có tài khoản?
       <a href="#">
         Đăng ký ngay!

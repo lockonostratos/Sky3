@@ -3,7 +3,8 @@
 
 <div class="row no-margin">
   <sky-select options="saleCtrl.saleAccounts" model="saleCtrl.seller" color="shadow" searchable="true"
-              caption="email" change="saleCtrl.syncSeller(model)"></sky-select>
+              caption="email" change="saleCtrl.syncSeller(model)"
+              ></sky-select>
   <sky-select options="saleCtrl.customers" model="saleCtrl.buyer" color="shadow"
               caption="name" change="saleCtrl.syncBuyer(model)" size="20"></sky-select>
   <input type="text" placeholder="tìm sản phẩm" ng-model="saleCtrl.searchText" class="sky-control shadow" focusable="searchBox"
@@ -107,6 +108,4 @@
                             ng-model="saleCtrl.currentTab.billDiscount"
                             ng-change="saleCtrl.syncBillDiscount()" />
 
-  <br/>
-  {{saleCtrl.currentTab}}
 </div>

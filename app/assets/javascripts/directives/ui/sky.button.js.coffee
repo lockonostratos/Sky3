@@ -8,6 +8,7 @@ Sky.directive 'skyButton', ->
       rightIcon: '='
       color: '@'
       disabled: '='
+      click: '&'
 
     controller: ($scope, $element, $attrs) ->
       $scope.hasIcon = $scope.icon isnt undefined

@@ -1,6 +1,6 @@
 class SessionsController < MerchantApplicationController
   skip_before_filter :check_account_permission, :only => [:new, :create]
-
+  layout 'session'
   def index
     render json: current_account
   end
@@ -14,7 +14,6 @@ class SessionsController < MerchantApplicationController
   end
 
   def new
-    render layout: "empty"
   end
 
   def create
@@ -27,7 +26,7 @@ class SessionsController < MerchantApplicationController
       end
       redirect_to home_path
     else
-      render 'new', layout: "empty"
+      render 'new'
     end
   end
 

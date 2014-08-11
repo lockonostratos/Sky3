@@ -32,13 +32,16 @@ managerRole.clone("Quản Lý", "Quản Lý Ext")
 #1.Tạo tài khoản của chính Gera
 Account.create({extension: :gera, display_name: 'hongky', email: 'hongky@gmail.com', password: '123'})
 
+
 #2.Tạo tài khoản:------------------------------------------------------------------------------------------------------>
 tai = Account.create({extension: :merchant, display_name: 'chitai', email: 'chitai@gmail.com', password: '123'})
-loc = Account.create({extension: :merchant, display_name: 'locquoc', email: 'lelongking@gmail.com', password: '123'})
+loc = Account.create({extension: :merchant, display_name: 'Quốc Lộc', email: 'lelongking@gmail.com', password: '123'})
+loc_mer = Merchant.find_by_owner_id(loc.id)
+loc_mer.update(name: 'Huỳnh Châu')
 
-son = Account.create({parent_id: loc.id, extension: :merchant, display_name: 'sonle', email: 'lehaoson@gmail.com', password: '123'})
-pham = Account.create({parent_id: son.id, extension: :merchant, display_name: 'tieupham', email: 'tieupham@gmail.com', password: '123'})
-ky = Account.create({parent_id: son.id, extension: :merchant, display_name: 'hongky', email: 'nguyenhongky@gmail.com', password: '123'})
+son = Account.create({parent_id: loc.id, extension: :merchant, display_name: 'Ngọc Sơn', email: 'lehaoson@gmail.com', password: '123'})
+pham = Account.create({parent_id: son.id, extension: :merchant, display_name: 'Tiểu Phàm', email: 'tieupham@gmail.com', password: '123'})
+ky = Account.create({parent_id: son.id, extension: :merchant, display_name: 'Hồng Kỳ', email: 'nguyenhongky@gmail.com', password: '123'})
 
 tehao = Account.create({parent_id: son.id, extension: :merchant, display_name: 'tehao', email: 'tehao@gmail.com', password: '123'})
 

@@ -92,10 +92,11 @@ header {
     margin-bottom: 0;
     i, a { color: #5e5e5e; }
 
+    li:hover a {background: transparent;}
     .home-nav {
       padding: 4px 10px 0 5px;
 
-      &:hover { i {color: $pumpkin;} }
+      &:hover { i {color: $pumpkin; } }
     }
 
     .app-caption {

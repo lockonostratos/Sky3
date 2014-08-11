@@ -1,6 +1,6 @@
 <form class="well well-sm" editable-form name="importHeaders"  onaftersave="importCtrl.saveImportHeaders()">
   <button type="button" class="lime btn btn-labeled" ng-click="importHeaders.$show()" ng-show="!importHeaders.$visible">
-    <span class="btn-label">
+    <span class="btn-label left">
       <i class="fa fa-pencil"></i>
     </span>Chỉnh sửa
   </button>
@@ -15,12 +15,12 @@
 
   <span class="editable-left-commands" ng-show="importHeaders.$visible">
     <button type="button" class="btn btn-labeled btn-danger" ng-disabled="importHeaders.$waiting" ng-click="importHeaders.$cancel()">
-      <span class="btn-label">
+      <span class="btn-label left">
         <i class="glyphicon glyphicon-remove"></i>
       </span>Dừng
     </button>
     <button class="lime btn btn-labeled" ng-disabled="importHeaders.$waiting">
-      <span class="btn-label">
+      <span class="btn-label left">
         <i class="glyphicon glyphicon-ok"></i>
       </span>Lưu
     </button>

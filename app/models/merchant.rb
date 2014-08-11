@@ -9,6 +9,8 @@ class Merchant < ActiveRecord::Base
   has_many :transactions
   has_many :transaction_details
 
+  belongs_to :owner, class_name: 'MerchantAccount'
+
   def find_sales
     result = MerchantAccount
     .joins("INNER JOIN merchant_account_roles ON merchant_accounts.id = merchant_account_roles.merchant_account_id")
