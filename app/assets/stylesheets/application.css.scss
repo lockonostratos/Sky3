@@ -7,6 +7,7 @@
 @import "variables";
 @import "mixins";
 @import "xeditable";
+@import "ui-grid-unstable";
 
 @import "components";
 
@@ -87,7 +88,7 @@ header {
 
   .navbar{
     background-color: #fff;
-    border-bottom: 1px solid #e6e6e6;
+    border-bottom: 1px solid #e3e3e3;
     margin-left: $left-pane;
     margin-bottom: 0;
     i, a { color: #5e5e5e; }
@@ -289,6 +290,26 @@ header {
   }
 }
 
-.sale-typeahead {
+.fluid-grid {
+  width: 100%;
+  min-height: 500px;
+  border-left: 0px;
+}
 
+table.sky-control {
+  border-top: 1px solid #dcdcdc;
+  border-bottom: 1px solid #dcdcdc;
+  thead > tr > th {
+    border-bottom: solid 1px #ddd !important;
+    text-transform: uppercase;
+//    text-align: center;
+  }
+  tbody > tr {
+    &:hover {background: #e6e6e6;}
+
+    > td:not(:last-child) {
+      border-right: 1px solid #dcdcdc;
+      white-space: nowrap;
+    }
+  }
 }

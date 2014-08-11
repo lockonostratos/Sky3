@@ -4,12 +4,13 @@
             caption="name" change="inventoryCtrl.changeCurrentWarehouse(model)"></sky-select>
 
 <div class="row no-margin">
-  <table class="table table-condensed table-hover">
+  <table class="table sky-control">
     <thead>
-    <th>Barcode</th>
+    <th style="width: 125px">Barcode</th>
     <th>Tên</th>
-    <th>Loại</th>
-    <th>NCC</th>
+    <th style="width: 60px">Loại</th>
+    <th style="width: 90px">Qui cách</th>
+    <th>Nhà Cung Cấp</th>
     <th>SL Nhập</th>
     <th>SL Còn</th>
     <th>Giá Nhập</th>
@@ -18,7 +19,8 @@
     <tr ng-repeat="item in inventoryCtrl.products">
       <td>{{item.productCode}}</td>
       <td>{{item.name}}</td>
-      <td>{{item.skull.unit}} - {{item.skull.skull01}} </td>
+      <td>{{item.skull.unit}}</td>
+      <td>{{item.skull.skull01}}</td>
       <td>{{item.provider.name}}</td>
       <td>{{item.importQuality}}</td>
       <td>{{item.instockQuality}}</td>

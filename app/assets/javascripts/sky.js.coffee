@@ -13,7 +13,8 @@
 
 moment.lang 'vi'
 
-window.Sky = angular.module 'Sky', ['ngRoute', 'rails', 'ui.bootstrap', 'ngAnimate', 'xeditable', 'dx', 'ui.utils']
+window.Sky = angular.module 'Sky', ['ngRoute', 'rails', 'ui.bootstrap', 'ngAnimate', 'xeditable', 'dx',
+                                    'ui.utils', 'ui.grid']
 
 Sky.config ['$routeProvider', ($routeProvider) ->
   $routeProvider

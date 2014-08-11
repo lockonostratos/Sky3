@@ -6,6 +6,7 @@
 #= require dx.all
 
 #= require ui-utils
+#= require ui-grid-unstable
 #= require angular-route
 #= require angular-animate
 #= require angularjs-rails-resource

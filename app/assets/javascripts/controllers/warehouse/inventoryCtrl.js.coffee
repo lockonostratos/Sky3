@@ -1,5 +1,5 @@
-Sky.controller 'inventoryCtrl', ['$routeParams', 'Common', 'MerchantAccount', 'Warehouse', 'Product'
-($routeParams, Common,MerchantAccount, Warehouse, Product) ->
+Sky.controller 'inventoryCtrl', ['$scope', '$routeParams', 'Common', 'MerchantAccount', 'Warehouse', 'Product'
+($scope, $routeParams, Common,MerchantAccount, Warehouse, Product) ->
   Common.caption = 'kiểm kho'
   @message = 'message from inventory'
 
@@ -15,8 +15,6 @@ Sky.controller 'inventoryCtrl', ['$routeParams', 'Common', 'MerchantAccount', 'W
 
   @changeCurrentWarehouse = (item) =>
     Product.query({warehouse_id: item.id}).then (data) => @products = data
-
-
 
   return
 ]
