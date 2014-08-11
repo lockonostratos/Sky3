@@ -35,6 +35,10 @@ Sky.controller 'applicationCtrl', ['$routeParams', '$location', '$scope', 'Commo
     title: 'Nhập kho'
     url: '/warehouse/import'
     icon: 'fa fa-download'
+  ,
+    title: 'Kiểm kho'
+    url: '/warehouse/inventory'
+    icon: 'fa fa-download'
   ]
 
   @toggleCollapse = -> @collapsedMode = !@collapsedMode

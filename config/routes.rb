@@ -27,6 +27,8 @@ Rails.application.routes.draw do
         get 'import_availables'
       end
     end
+
+    resources :products
     resources :orders
     resources :order_details
     resources :deliveries
@@ -36,5 +38,10 @@ Rails.application.routes.draw do
 
 
     resources :temp_import_details
+    resources :warehouses do
+      collection do
+        get 'available'
+      end
+    end
   end
 end

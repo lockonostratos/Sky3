@@ -1,10 +1,10 @@
-class ProductsController < ApplicationController
+class ProductsController < MerchantApplicationController
   before_action :set_product, only: [:show, :edit, :update, :destroy]
   # GET /products
   # GET /products.json
   def index
-    @products = Product.all
-    render json:@products
+    warehouse_id = if params[:warehouse_id] then params[:warehouse_id] else current_merchant_account.current_warehouse_id end
+    @products = Product.where(warehouse_id: warehouse_id)
   end
 
   # GET /products/1

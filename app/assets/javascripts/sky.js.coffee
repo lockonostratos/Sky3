@@ -43,6 +43,10 @@ Sky.config ['$routeProvider', ($routeProvider) ->
       templateUrl: '../assets/warehouse/import.html',
       controller: 'importCtrl'
       controllerAs: 'importCtrl'
+    }).when('/warehouse/inventory', {
+      templateUrl: '../assets/warehouse/inventory.html',
+      controller: 'inventoryCtrl'
+      controllerAs: 'inventoryCtrl'
     }).otherwise( {
       templateUrl: '../assets/global/404.html'
     })
