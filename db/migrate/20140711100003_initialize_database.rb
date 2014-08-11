@@ -448,13 +448,14 @@ class InitializeDatabase < ActiveRecord::Migration
     end
     #Phieu giao hang------------------------------------------>
     create_table :deliveries do |t|
+      t.belongs_to :warehouse, :null => false
       t.belongs_to :order, :null => false
       t.belongs_to :merchant_account, :null => false
       t.string :name
       t.boolean :success, :default=>false
 
-      t.datetime :creation_date,:null => false #ngay dat hang
-      t.datetime :delivery_date, :null => false #ngay giao hang
+      t.date :creation_date,:null => false #ngay dat hang
+      t.date :delivery_date, :null => false #ngay giao hang
       t.string :delivery_address, :null => false #đia chi giao hang
       t.string :contact_name, :null => false #tên nguoi lien lac
       t.string :contact_phone, :null => false #so dt nguoi lien lac

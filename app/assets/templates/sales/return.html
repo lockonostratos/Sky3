@@ -1,0 +1,35 @@
+<sky-select options="returnCtrl.warehouses" model="returnCtrl.currentWarehouse" color="pumpkin shadow"
+            caption="name" change="returnCtrl.changeView(model)"></sky-select>
+<sky-button color="shadow" ng-click="isCollapsed = !isCollapsed" caption="Tạo Phiếu Trả Hàng" ></sky-button>
+<div collapse="!isCollapsed">
+  <div class="well well-lg">
+    <input type="text" class="sky-control shadow" placeholder="mã phiếu order" ng-model="returnCtrl.searchText"
+           typeahead="product.caption for product in saleCtrl.allProducts | filter:$viewValue | limitTo:8"
+           typeahead-on-select="returnCtrl.productFoundAction($item)" />
+  </div>
+</div>
+
+<table class="table">
+  <thead>
+  <th>Mã Order</th>
+  <th>Người Bán</th>
+  <th>người Mua</th>
+  <th>Giá Cộng</th>
+  <th>Giảm Giá</th>
+  <th>Giá Thu</th>
+  <th>Trả Trước</th>
+  <th>Nợ</th>
+  <th>Trả Hàng</th>
+  </thead>
+  <tr ng-repeat="item in returnCtrl.orders">
+    <td>{{item.name}}</td>
+    <td>{{item.sellerId}}</td>
+    <td>{{item.buyerId}}</td>
+    <td>{{item.totalPrice}}</td>
+    <td>{{item.discountCash}}</td>
+    <td>{{item.finalPrice}}</td>
+    <td>{{item.deposit}}</td>
+    <td>{{item.debt}}</td>
+    <td>{{item.return}}</td>
+  </tr>
+</table>

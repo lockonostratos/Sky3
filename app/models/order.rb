@@ -23,21 +23,7 @@ class Order < ActiveRecord::Base
     metro_summary.save()
   end
 
-  def create_new_delivery
-      Delivery.create!(
-          :order_id => self.id,
-          :merchant_account_id => self.creator_id,
-          :name => self.name,
-          :creation_date => self.created_at,
-          :delivery_date => self.updated_at,
-          :delivery_address => 'Ho Chi Minh',
-          :contact_name => 'Sang',
-          :contact_phone => '0123456789',
-          :transportation_fee => 200,
-          :comment => 'Giao Hang Tan Noi',
-          :status => 0
-      )
-  end
+
   
   private
   def find_transaction

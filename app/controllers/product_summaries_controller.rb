@@ -21,6 +21,13 @@ class ProductSummariesController < MerchantApplicationController
     end
   end
 
+  #
+  def show_product_summary
+    warehouse_id = if params[:warehouse_id] then params[:warehouse_id] else current_merchant_account.current_warehouse_id end
+    @product_summaries = ProductSummary.products_of(warehouse_id)
+  end
+
+
 
 
   # GET /product_summaries/1

@@ -5,6 +5,14 @@ Sky.controller 'saleCtrl', ['focus', '$routeParams','$http', 'Common', 'Product'
     @focusSearchBox = true;
     @transports = []; @transport={}; @transports.push obj for property, obj of Sky.Transports; @transport = @transports[0]
     @payments = []; @payment={}; @payments.push obj for property, obj of Sky.Payments; @payment = @payments[0]
+    @delivery = {
+      delivery_date: null
+      delivery_address: null
+      contact_name: null
+      contact_phone: null
+      transportation_fee: null
+      comment: null
+    }
 
     @seller = {}; @saleAccounts = []
     MerchantAccount.get('sellers').then (data) =>
@@ -46,6 +54,12 @@ Sky.controller 'saleCtrl', ['focus', '$routeParams','$http', 'Common', 'Product'
       else
         @payment = @payments.find {value: 1}
       @currentTab.update() if item
+    @checkSubmitFrom = =>
+      if !@transport.value
+        return false
+      else
+        for key, value of @delivery
+          if !value then return true
 
 
 
@@ -54,11 +68,11 @@ Sky.controller 'saleCtrl', ['focus', '$routeParams','$http', 'Common', 'Product'
       if obj[key] isnt obj[oldKey] then obj.update().then (data) => obj[oldKey] = obj[key]
 
     @orderFinished = =>
-      order = new Order()
-      order.temp_order_id = @currentTab.id
-      order.save()
-
-    @test = 1
+      if !@checkSubmitFrom()
+        order = new Order()
+        order.temp_order_id = @currentTab.id
+        order.temp_delivery = @delivery
+        order.save()
 
     @productFoundAction = (item) =>
       ProductSummary.get(item.id).then (data) =>

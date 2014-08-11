@@ -1,32 +1,3 @@
-<sky-select options="inventoryCtrl.warehouses" model="inventoryCtrl.currentWarehouse" color="pumpkin shadow"
-            caption="name" change="inventoryCtrl.changeCurrentWarehouse(model)"></sky-select>
-<sky-select options="inventoryCtrl.warehouses" model="inventoryCtrl.currentWarehouse" color="pumpkin shadow"
-            caption="name" change="inventoryCtrl.changeCurrentWarehouse(model)"></sky-select>
 
-<div class="row no-margin">
-  <table class="table table-condensed table-hover">
-    <thead>
-    <th>Barcode</th>
-    <th>Tên</th>
-    <th>Loại</th>
-    <th>NCC</th>
-    <th>SL Nhập</th>
-    <th>SL Còn</th>
-    <th>Giá Nhập</th>
-    <th>Ngày Hết Hạn</th>
-    </thead>
-    <tr ng-repeat="item in inventoryCtrl.products">
-      <td>{{item.productCode}}</td>
-      <td>{{item.name}}</td>
-      <td>{{item.skull.unit}} - {{item.skull.skull01}} </td>
-      <td>{{item.provider.name}}</td>
-      <td>{{item.importQuality}}</td>
-      <td>{{item.instockQuality}}</td>
-      <td>{{item.importPrice}}</td>
-      <td>{{item.expire}}</td>
-
-    </tr>
-  </table>
-</div>
 
 

@@ -10,9 +10,3 @@ json.array!(@products) do |me|
     json.extract! me.warehouse, :id, :name
   end
 end
-
-
-# json.array!(@products) do |me|
-#   json.merge! me.attributes
-# end
-

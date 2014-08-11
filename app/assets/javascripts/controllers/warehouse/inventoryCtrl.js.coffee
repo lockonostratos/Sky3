@@ -1,22 +1,7 @@
-Sky.controller 'inventoryCtrl', ['$routeParams', 'Common', 'MerchantAccount', 'Warehouse', 'Product'
-($routeParams, Common,MerchantAccount, Warehouse, Product) ->
+Sky.controller 'inventoryCtrl', ['$routeParams', 'Common', 'MerchantAccount', 'Warehouse', 'Product', 'ProductSummary'
+($routeParams, Common,MerchantAccount, Warehouse, Product, ProductSummary) ->
   Common.caption = 'kiểm kho'
   @message = 'message from inventory'
-
-  @show = [{},{}]
-
-  @warehouses = []; @currentWarehouse = {}
-  Warehouse.get('available').then (data) =>
-    @warehouses = data if data
-    @currentWarehouse = @warehouses.find ({id: Common.currentMerchantAccount.warehouse.id})
-    console.log @currentWarehouse.id
-  @products = []
-  Product.query({warehouse_id: Common.currentMerchantAccount.warehouse.id}).then (data) => @products = data
-
-  @changeCurrentWarehouse = (item) =>
-    Product.query({warehouse_id: item.id}).then (data) => @products = data
-
-
 
   return
 ]
