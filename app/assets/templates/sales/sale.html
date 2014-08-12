@@ -17,7 +17,7 @@
 <br />
 <div class="row no-margin">
   Ten:               <input type="text" class="sky-control shadow" width="100px"
-                            ng-model="saleCtrl.sellingDetail.name" ng-disabled="" />
+                            ng-model="saleCtrl.sellingDetail.name" ng-disabled=true />
 
   Gia:               <input type="text" class="sky-control shadow" width="100px"
                             ng-model="saleCtrl.sellingDetail.price" ng-disabled=true />
@@ -39,7 +39,6 @@
   Giảm Giá Tiền Mặt: <input type="number" class="sky-control shadow" min="0" style="width: 100px;"
                             ng-change="saleCtrl.calculation_tabDetails(saleCtrl.sellingDetail, true)"
                             ng-model="saleCtrl.sellingDetail.discountCash" ng-disabled="saleCtrl.sellingProduct == null"/>
-  <input typpe="text" ng-model="scoped" ng-change="saleCtrl.logger()">
 </div>
 <div class="row no-margin">
   <table class="table table-condensed table-hover">

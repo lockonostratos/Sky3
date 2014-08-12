@@ -84,19 +84,19 @@ ActiveRecord::Schema.define(version: 20140711100003) do
   end
 
   create_table "deliveries", force: true do |t|
-    t.integer  "warehouse_id",                                                 null: false
-    t.integer  "order_id",                                                     null: false
-    t.integer  "merchant_account_id",                                          null: false
+    t.integer  "warehouse_id",                                 null: false
+    t.integer  "order_id",                                     null: false
+    t.integer  "merchant_account_id",                          null: false
+    t.integer  "shipper"
     t.string   "name"
-    t.boolean  "success",                                      default: false
-    t.datetime "creation_date",                                                null: false
-    t.datetime "delivery_date",                                                null: false
-    t.string   "delivery_address",                                             null: false
-    t.string   "contact_name",                                                 null: false
-    t.string   "contact_phone",                                                null: false
-    t.decimal  "transportation_fee",  precision: 10, scale: 0,                 null: false
-    t.string   "comment",                                                      null: false
-    t.integer  "status",                                                       null: false
+    t.integer  "status",                                       null: false
+    t.date     "creation_date",                                null: false
+    t.date     "delivery_date",                                null: false
+    t.string   "delivery_address",                             null: false
+    t.string   "contact_name",                                 null: false
+    t.string   "contact_phone",                                null: false
+    t.decimal  "transportation_fee",  precision: 10, scale: 0, null: false
+    t.string   "comment",                                      null: false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -467,7 +467,7 @@ ActiveRecord::Schema.define(version: 20140711100003) do
     t.integer  "seller_id",                                                 null: false
     t.integer  "buyer_id",                                                  null: false
     t.string   "name"
-    t.boolean  "return",                                    default: false, null: false
+    t.integer  "return",                                                    null: false
     t.integer  "payment_method",                            default: 0,     null: false
     t.integer  "delivery",                                  default: 0,     null: false
     t.boolean  "bill_discount",                             default: false
@@ -520,27 +520,31 @@ ActiveRecord::Schema.define(version: 20140711100003) do
   end
 
   create_table "return_details", force: true do |t|
-    t.integer  "return_id",                                                  null: false
-    t.string   "name"
-    t.integer  "return_product_id",                                          null: false
-    t.integer  "return_quality",                                             null: false
-    t.boolean  "type_return",                                default: false
-    t.integer  "product_id"
-    t.integer  "quality"
-    t.decimal  "price",             precision: 10, scale: 0, default: 0
-    t.boolean  "submited",                                   default: false
+    t.integer  "return_id",                                            null: false
+    t.integer  "order_detail_id",                                      null: false
+    t.integer  "product_id",                                           null: false
+    t.integer  "sale_quality",                                         null: false
+    t.integer  "return_quality",                           default: 0, null: false
+    t.decimal  "price",           precision: 10, scale: 0,             null: false
+    t.decimal  "discount_cash",   precision: 10, scale: 0,             null: false
+    t.decimal  "final_price",     precision: 10, scale: 0, default: 0, null: false
+    t.boolean  "type_return",                                          null: false
+    t.boolean  "submited",                                             null: false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
   create_table "returns", force: true do |t|
-    t.integer  "order_id",                                                     null: false
-    t.integer  "merchant_account_id",                                          null: false
-    t.string   "name"
-    t.boolean  "submited",                                     default: false
-    t.decimal  "total_return_money",  precision: 10, scale: 0
-    t.datetime "creation_date",                                                null: false
-    t.string   "comment",                                                      null: false
+    t.integer  "branch_id",                                               null: false
+    t.integer  "warehouse_id",                                            null: false
+    t.integer  "order_id",                                                null: false
+    t.integer  "creator_id",                                              null: false
+    t.string   "name",                                                    null: false
+    t.integer  "product_sales",                               default: 0, null: false
+    t.integer  "product_quality",                             default: 0, null: false
+    t.decimal  "total_return_money", precision: 10, scale: 0, default: 0, null: false
+    t.string   "comment"
+    t.integer  "status",                                                  null: false
     t.datetime "created_at"
     t.datetime "updated_at"
   end

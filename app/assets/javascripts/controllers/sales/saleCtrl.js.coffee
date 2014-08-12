@@ -55,11 +55,13 @@ Sky.controller 'saleCtrl', ['focus', '$routeParams','$http', 'Common', 'Product'
         @payment = @payments.find {value: 1}
       @currentTab.update() if item
     @checkSubmitFrom = =>
-      if !@transport.value
+      if !@transport.value and @tabDetails[0]
         return false
       else
         for key, value of @delivery
           if !value then return true
+
+#
 
 
 
@@ -152,14 +154,6 @@ Sky.controller 'saleCtrl', ['focus', '$routeParams','$http', 'Common', 'Product'
       result.discountPercent = 0
       result.totalPrice = result.finalPrice  = source.price;
       result
-
-#    @reloadTabDiscount= (tab)=>
-#      @currentTab = tab
-#      if @currentTab.discountCash == 0
-#        @currentTab.discountPercent = 0
-#      else
-#        @currentTab.discountPercent = @currentTab.discountCash/@currentTab.totalPrice*100
-#      @currentTab
 
     @updateSummaries = => TempOrder.get(@currentTab.id).then (data) =>  @reloadOrderOf @currentTab, data
 

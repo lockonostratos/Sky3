@@ -1,6 +1,19 @@
-<sky-select options="deliveryCtrl.warehouses" model="deliveryCtrl.currentWarehouse" color="pumpkin shadow"
-            caption="name" change="deliveryCtrl.changeView(model)"></sky-select>
+<tabset>
+  <tab heading="Xem - Xác Nhận Phiếu Giao Hàng">
+    Justified content
+  </tab>
+  <tab heading="Tạo - Hủy Phiếu Giao Hàng">
+    Long Labeled Justified content
+  </tab>
 
+</tabset>
+
+
+
+<sky-select color="pumpkin shadow" caption="name"
+            model="deliveryCtrl.currentWarehouse"
+            options="deliveryCtrl.warehouses"
+            change="deliveryCtrl.changeView(model)"></sky-select>
 <input type="radio" ng-model="deliveryCtrl.showDelivery" value="all" ng-change="deliveryCtrl.changeView()"> All View
 <input type="radio" ng-model="deliveryCtrl.showDelivery" value="only" ng-change="deliveryCtrl.changeView()"> Only View
 <table class="table">
@@ -25,9 +38,9 @@
     <td>{{item.deliveryDate}}</td>
     <td>{{item.transportationFee}}</td>
     <td>{{item.comment}}</td>
-    <td>chưa có</td>
-    <td>chờ</td>
-    <td><input type="button" value="Giao" ng-click="saleCtrl.removeSellingProduct(item, $index)"></td>
+    <td>{{item.shippers.displayName}}</td>
+    <td>{{item.statusShow}}</td>
+    <td><input type="button" value="{{item.showButton}}" ng-click="deliveryCtrl.changeStatus(item, $index)"></td>
 
   </tr>
 </table>

@@ -31,4 +31,17 @@
 
 <div dx-data-grid="importCtrl.dataGridOptions"></div>
 {{importCtrl.dataGridOptions}}
+<br/>
+<br/>
+<sky-select options="importCtrl.warehouses" model="importCtrl.currentWarehouse" color="pumpkin shadow"
+            caption="name" change="importCtrl.changeCurrentWarehouse(model)"></sky-select>
+<sky-button color="shadow" ng-click="isCollapsed = !isCollapsed" caption="Tạo Phiếu Nhập Kho" ></sky-button>
+<div collapse="!isCollapsed">
+  <div class="well well-lg">
+    Lý Do:<input type="text" class="sky-control shadow" placeholder="mã phiếu order" />
+    Ghi Chú Thêm: <input type="text" class="sky-control shadow" placeholder="mô tả" />
+    <sky-button color="shadow" caption="Tạo" ></sky-button>
+  </div>
+</div>
+
 

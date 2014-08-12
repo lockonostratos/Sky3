@@ -13,6 +13,8 @@ class Order < ActiveRecord::Base
   after_update :create_transaction
 
   enum status: [:initializing, :finish, :delivery, :cancelled]
+  #[:ko trả hàng, :có trả hàng, :trả hàng đang chờ xác nhận, :hết hàng để trả]
+  enum return: [:not_return, :return, :returning, :fail]
 
   
   def update_metro_summary #cập nhật tiền bán vào bảng MetroSummary

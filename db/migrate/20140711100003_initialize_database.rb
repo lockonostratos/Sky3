@@ -403,7 +403,7 @@ class InitializeDatabase < ActiveRecord::Migration
       t.integer :seller_id, :null => false                         #người bán
       t.integer :buyer_id, :null => false                          #người mua
       t.string :name                                               #tên phiếu order(tính lại khi cập nhật)
-      t.boolean :return, :null => false,           :default => false         #Id don tra hang (neu co)
+      t.integer :return, :null => false                           #Id don tra hang (neu co)
       t.integer :payment_method, :null => false,   :default => 0     #cách thanh toán (tiền mặt, nợ)
       t.integer :delivery,:null => false,          :default => 0         #phương thức vận chuyển(trực tiếp, giao hàng)
                                                                       #false ko co giao hàng, true có giao hàng
@@ -451,8 +451,9 @@ class InitializeDatabase < ActiveRecord::Migration
       t.belongs_to :warehouse, :null => false
       t.belongs_to :order, :null => false
       t.belongs_to :merchant_account, :null => false
+      t.integer :shipper
       t.string :name
-      t.boolean :success, :default=>false
+      t.integer :status, :default=>false
 
       t.date :creation_date,:null => false #ngay dat hang
       t.date :delivery_date, :null => false #ngay giao hang
@@ -471,29 +472,32 @@ class InitializeDatabase < ActiveRecord::Migration
       t.timestamps
     end
     #Phieu tra hang------------------------------------------->
-    create_table :returns do |t|
-      t.belongs_to :order, :null => false
-      t.belongs_to :merchant_account, :null => false
-      t.string :name
-      t.boolean :submited, :default =>false
-
-      t.decimal :total_return_money
-      t.datetime :creation_date, :null => false
-      t.string :comment, :null => false
+    create_table   :returns do |t|
+      t.belongs_to :branch,              :null => false
+      t.belongs_to :warehouse,           :null => false
+      t.belongs_to :order,               :null => false
+      t.integer    :creator_id,          :null => false
+      t.string     :name,                :null => false
+      t.integer    :product_sales,       :null => false, :default => 0
+      t.integer    :product_quality,     :null => false, :default => 0
+      t.decimal    :total_return_money,  :null => false, :default => 0
+      t.string     :comment
+      t.integer    :status,              :null => false
 
       t.timestamps
     end
     #Chi tiet tra hang---------------------------------------->
-    create_table :return_details do |t|
-      t.belongs_to :return, :null => false
-      t.string :name
-      t.integer :return_product_id, :null => false #id product tra hang
-      t.integer :return_quality, :null => false #so luong tra
-      t.boolean :type_return, :default =>false #loai hinh tra hang =false thi doi, =true tra tien
-      t.integer :product_id #id product hang doi
-      t.integer :quality #so luong hang doi
-      t.decimal :price, :default=>0 #giá tiền sản phẩm
-      t.boolean :submited, :default =>false #xác nhận
+    create_table   :return_details do |t|
+      t.belongs_to :return,         :null => false
+      t.belongs_to :order_detail,  :null => false
+      t.belongs_to :product,        :null => false
+      t.integer    :sale_quality,   :null => false
+      t.integer    :return_quality, :null => false, :default => 0
+      t.decimal    :price,          :null => false
+      t.decimal    :discount_cash,  :null => false
+      t.decimal    :final_price,    :null => false, :default => 0
+      t.boolean    :type_return,    :null => false
+      t.boolean    :submited,       :null => false
 
       t.timestamps
     end

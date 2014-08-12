@@ -1,15 +1,17 @@
 class Warehouse < ActiveRecord::Base
+  has_many :products
+  has_many :product_summaries
+  has_many :orders
+  has_many :deliveries
+  has_many :returns
+  has_many :return_details
   has_many :imports
   has_many :exports
   has_many :inventories
-  has_many :orders
-  has_many :products
-  has_many :product_summaries
   has_many :role_warehouses
   has_many :metro_summaries
   has_many :transactions
   has_many :transaction_details
-  has_many :deliveries
 
   belongs_to :branch
   belongs_to :merchant

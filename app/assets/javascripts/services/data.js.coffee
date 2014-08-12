@@ -56,6 +56,13 @@ Sky.factory 'Delivery', [ 'railsResourceFactory', (railsResourceFactory) ->
   railsResourceFactory { url: 'api/deliveries', name: 'delivery' }
 ]
 
+Sky.factory 'Return', [ 'railsResourceFactory', (railsResourceFactory) ->
+  railsResourceFactory { url: 'api/returns', name: 'return' }
+]
+
+Sky.factory 'ReturnDetail', [ 'railsResourceFactory', (railsResourceFactory) ->
+  railsResourceFactory { url: 'api/return_details', name: 'return_details' }
+]
 
 Sky.factory 'Warehouse', [ 'railsResourceFactory', (railsResourceFactory) ->
   railsResourceFactory { url: 'api/warehouses', name: 'warehouse' }

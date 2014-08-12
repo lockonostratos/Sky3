@@ -18,6 +18,7 @@ class TempOrder < ActiveRecord::Base
                   buyer_id: self.buyer_id,
                   name: orders_bill_code(self.warehouse_id),
                   status: :initializing,
+                  return: :not_return,
                   delivery: self.delivery,
                   payment_method: self.payment_method,
                   bill_discount: self.bill_discount,

@@ -13,13 +13,11 @@ Rails.application.routes.draw do
       end
     end
     resources :accounts
-
     resources :merchant_accounts do
       collection do
         get 'sellers'
       end
     end
-
     resources :customers
 
     resources :product_summaries do
@@ -33,22 +31,33 @@ Rails.application.routes.draw do
         get 'product_of'
       end
     end
+    resources :warehouses do
+      collection do
+        get 'available'
+      end
+    end
 
-    resources :temp_orders
-    resources :temp_order_details
-    resources :orders
+    resources :orders do
+      collection do
+        get 'search'
+      end
+    end
     resources :order_details
     resources :deliveries do
       collection do
         get 'deliveries_of'
       end
     end
-
-    resources :temp_import_details
-    resources :warehouses do
+    resources :returns do
       collection do
-        get 'available'
+
       end
     end
+    resources :return_details
+
+    resources :temp_orders
+    resources :temp_order_details
+    resources :temp_import_details
+
   end
 end

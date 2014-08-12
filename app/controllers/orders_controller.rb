@@ -21,6 +21,15 @@ class OrdersController < MerchantApplicationController
   def edit
   end
 
+  def search
+    warehouse_id = if params[:warehouse_id] then params[:warehouse_id] else current_merchant_account.current_warehouse_id end
+    if params[:seller_id]
+      @orders = Order.where(warehouse_id: warehouse_id, merchant_account_id: params[:seller_id])
+    else
+      @orders = Order.where(warehouse_id: warehouse_id)
+    end
+  end
+
   def create_failed
   end
 
@@ -60,7 +69,7 @@ class OrdersController < MerchantApplicationController
     temp_order = TempOrder.find(params[:order]['temp_order_id']); if !temp_order then create_failed end
     selling_items = temp_order.details; if selling_items.length <= 0 then create_failed end
     check_quality_before_sale(selling_items)
-    # if temp_order.delivery check_delivery
+    # if temp_order.delivery == 1 check_delivery
     
     newOrder = temp_order.clone_to_order()
     selling_items.each do |product|
@@ -68,9 +77,8 @@ class OrdersController < MerchantApplicationController
       subtract_quality_on_sales stocking_items, product, newOrder
     end
     newOrder.update_metro_summary()
-    if newOrder.delivery then create_new_delivery(newOrder, params[:order]['temp_delivery']) end
     if newOrder.delivery == 0 then newOrder.status = Order.statuses[:finish] end
-    if newOrder.delivery == 1 then newOrder.status = Order.statuses[:delivery] end
+    if newOrder.delivery == 1 then newOrder.status = Order.statuses[:delivery]; create_new_delivery(newOrder, params[:order]['temp_delivery']) end
     newOrder.save()
     #Xóa sản phẩm trong bảng tạm
     # temp_order.destroy
@@ -175,7 +183,7 @@ class OrdersController < MerchantApplicationController
         :contact_phone => delivery['contact_phone'],
         :transportation_fee => delivery['transportation_fee'],
         :comment => delivery['comment'],
-        :status => 0
+        :status => :initializing
     )
   end
 end

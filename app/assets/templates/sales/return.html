@@ -1,12 +1,37 @@
+<tabset>
+  <tab heading="Tạo Phiếu Trả Hàng">
+    Justified content
+  </tab>
+  <tab heading="Xác Nhận Phiếu Giao Hàng">
+    Short Labeled Justified content
+  </tab>
+  <tab heading="Xem Phiếu Giao Hàng">
+    Long Labeled Justified content
+  </tab>
+
+</tabset>
+
 <sky-select options="returnCtrl.warehouses" model="returnCtrl.currentWarehouse" color="pumpkin shadow"
             caption="name" change="returnCtrl.changeView(model)"></sky-select>
-<sky-button color="shadow" ng-click="isCollapsed = !isCollapsed" caption="Tạo Phiếu Trả Hàng" ></sky-button>
-<div collapse="!isCollapsed">
-  <div class="well well-lg">
-    <input type="text" class="sky-control shadow" placeholder="mã phiếu order" ng-model="returnCtrl.searchText"
-           typeahead="product.caption for product in saleCtrl.allProducts | filter:$viewValue | limitTo:8"
-           typeahead-on-select="returnCtrl.productFoundAction($item)" />
-  </div>
+<sky-button color="shadow" ng-click="returnCtrl.selectOrder()" caption="Tạo Phiếu Trả Hàng" ></sky-button>
+<div collapse="!returnCtrl.showSearchOrder">
+  <div class="well well-lg" >
+    Tìm:<input type="text" class="sky-control shadow" placeholder="mã phiếu order" ng-model="returnCtrl.searchText"
+           typeahead="order.name for order in returnCtrl.orderSearch | filter:$viewValue | limitTo:8"
+           typeahead-on-select="returnCtrl.orderFoundAction($item)"
+           ng-change="returnCtrl.changeSearch()" />
+    <sky-button color="shadow" ng-click="returnCtrl.createReturn()" caption="Tạo"
+                disabled="!returnCtrl.showCreateReturn"></sky-button>
+    <div collapse="!returnCtrl.showCurrentOrder">
+      Người Bán: {{returnCtrl.currentOrder.seller.displayName }}<br/>
+      Người Mua: {{returnCtrl.currentOrder.buyer.name}}<br/>
+      Tổng Giá: {{returnCtrl.currentOrder.totalPrice}}<br/>
+      Giảm Giá: {{returnCtrl.currentOrder.discountCash}}<br/>
+      Tổng Tính: {{returnCtrl.currentOrder.finalPrice}}<br/>
+      Trạng Thái Giao Dịch: {{returnCtrl.currentOrder.status}}<br/>
+      Trạng Thái Trả Hàng: {{returnCtrl.currentOrder.return}}
+    </div>
+   </div>
 </div>
 
 <table class="table">

@@ -38,62 +38,66 @@ class DeliveriesController < MerchantApplicationController
   end
 
   def update
-    @delivery.attributes = (delivery_params)
-    delivery = Delivery.find(@delivery.id)
-    respond_to do |format|
-      if delivery.success == true || delivery.status != 0 || @delivery.status == 0
-        format.html { redirect_to @delivery, notice: 'Ko the success' }
-        format.json { head :no_content }
-        return
-      else
-        if @delivery.status == 1
-          order = Order.find(@delivery.order_id)
-          order_detail = OrderDetail.where(order_id:order.id)
-          products = Product.where(id:order_detail.pluck(:product_id))
-
-          #Cap nhat stock_count, sale_count, sale_count_day, sale_count_month vao MetroSummary
-          metro_summary = MetroSummary.find_by_warehouse_id(order.warehouse_id)
-          order_detail.each do |order|
-            product = products.find(order.product_id.to_param)
-            product.instock_quality = product.instock_quality - order.quality
-            product.save()
-            #Cong san pham vao bang MetroSummary
-            metro_summary.stock_count -= order.quality
-            metro_summary.sale_count += order.quality
-            metro_summary.sale_count_day += order.quality
-            metro_summary.sale_count_month += order.quality
-          end
-          metro_summary.revenue += order.final_price
-          metro_summary.revenue_day += order.final_price
-          metro_summary.revenue_month += order.final_price
-          # Cap Nhat Bang MetroSummary
-          metro_summary.save()
-          #Cap nhat order
-          order.status = 3
-          order.save
-          @delivery.save()
-        elsif @delivery.status == 2
-          order = Order.find(@delivery.order_id)
-          order_detail = OrderDetail.where(order_id:order.id)
-          products = Product.where(id:order_detail.pluck(:product_id))
-          order_detail.each do |order|
-            product = products.find(order.product_id.to_param)
-            product.available_quality = product.available_quality + order.quality
-            products_summaries = ProductSummary.find_by_product_code_and_skull_id_and_warehouse_id(product.product_code, product.skull_id, product.warehouse_id)
-            products_summaries.quality = products_summaries.quality + order.quality
-            product.save()
-            products_summaries.save()
-          end
-          order.status = 4
-          order.save
-          @delivery.save()
-      end
-
-
-      end
-      format.html { redirect_to @delivery, notice: 'ok' }
-      format.json { head :no_content }
+    @delivery = Delivery.find(delivery_params[:id])
+    if @delivery #and @delivery.status == 0 and delivery_params[:status] == 1
+      @delivery.status = 1
+      @delivery.shipper = delivery_params[:shipper]
+      @delivery.save()
     end
+    # respond_to do |format|
+    #   if delivery.success == true || delivery.status != 0 || @delivery.status == 0
+    #     format.html { redirect_to @delivery, notice: 'Ko the success' }
+    #     format.json { head :no_content }
+    #     return
+    #   else
+    #     if @delivery.status == 1
+    #       order = Order.find(@delivery.order_id)
+    #       order_detail = OrderDetail.where(order_id:order.id)
+    #       products = Product.where(id:order_detail.pluck(:product_id))
+    #
+    #       #Cap nhat stock_count, sale_count, sale_count_day, sale_count_month vao MetroSummary
+    #       metro_summary = MetroSummary.find_by_warehouse_id(order.warehouse_id)
+    #       order_detail.each do |order|
+    #         product = products.find(order.product_id.to_param)
+    #         product.instock_quality = product.instock_quality - order.quality
+    #         product.save()
+    #         #Cong san pham vao bang MetroSummary
+    #         metro_summary.stock_count -= order.quality
+    #         metro_summary.sale_count += order.quality
+    #         metro_summary.sale_count_day += order.quality
+    #         metro_summary.sale_count_month += order.quality
+    #       end
+    #       metro_summary.revenue += order.final_price
+    #       metro_summary.revenue_day += order.final_price
+    #       metro_summary.revenue_month += order.final_price
+    #       # Cap Nhat Bang MetroSummary
+    #       metro_summary.save()
+    #       #Cap nhat order
+    #       order.status = 3
+    #       order.save
+    #       @delivery.save()
+    #     elsif @delivery.status == 2
+    #       order = Order.find(@delivery.order_id)
+    #       order_detail = OrderDetail.where(order_id:order.id)
+    #       products = Product.where(id:order_detail.pluck(:product_id))
+    #       order_detail.each do |order|
+    #         product = products.find(order.product_id.to_param)
+    #         product.available_quality = product.available_quality + order.quality
+    #         products_summaries = ProductSummary.find_by_product_code_and_skull_id_and_warehouse_id(product.product_code, product.skull_id, product.warehouse_id)
+    #         products_summaries.quality = products_summaries.quality + order.quality
+    #         product.save()
+    #         products_summaries.save()
+    #       end
+    #       order.status = 4
+    #       order.save
+    #       @delivery.save()
+    #   end
+    #
+    #
+    #   end
+    #   format.html { redirect_to @delivery, notice: 'ok' }
+    #   format.json { head :no_content }
+    # end
   end
 
 
@@ -113,6 +117,6 @@ class DeliveriesController < MerchantApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def delivery_params
-      params.require(:delivery).permit(:warehouse_id, :order_id, :merchant_account_id, :success, :creation_date, :delivery_date, :delivery_address, :contact_name, :contact_phone, :transportation_fee, :comment, :status)
+      params.require(:delivery)
     end
 end
