@@ -5,13 +5,13 @@ Sky.controller 'saleCtrl', ['focus', '$routeParams','$http', 'Common', 'Product'
     @focusSearchBox = true;
     @transports = []; @transport={}; @transports.push obj for property, obj of Sky.Transports; @transport = @transports[0]
     @payments = []; @payment={}; @payments.push obj for property, obj of Sky.Payments; @payment = @payments[0]
-    @delivery = {
+    @priorities =[]; @priority={}; @priorities.push obj for property, obj of Sky.Priorities; @priority = @priorities[0]
+    @tempdelivery = {
       delivery_date: null
       delivery_address: null
       contact_name: null
       contact_phone: null
       transportation_fee: null
-      comment: null
     }
 
     @seller = {}; @saleAccounts = []
@@ -44,6 +44,7 @@ Sky.controller 'saleCtrl', ['focus', '$routeParams','$http', 'Common', 'Product'
     @syncBuyer = (model) => @currentTab.buyerId = model.id; @currentTab.update()
     @syncTransport = (model) => @currentTab.delivery = model.value; @currentTab.update()
     @syncPayment = (model) => @currentTab.paymentMethod = model.value; @currentTab.update()
+
     @syncDiscountOrder = => @syncOnChange @currentTab, 'discountCash'
     @syncBillDiscount = => @currentTab.update().then (data) => @reloadOrderOf @currentTab, data
     @syncDeposit = (item)=>
@@ -54,24 +55,32 @@ Sky.controller 'saleCtrl', ['focus', '$routeParams','$http', 'Common', 'Product'
       else
         @payment = @payments.find {value: 1}
       @currentTab.update() if item
+
     @checkSubmitFrom = =>
-      if !@transport.value and @tabDetails[0]
-        return false
-      else
-        for key, value of @delivery
-          if !value then return true
+      if @tabDetails[0] and !@transport.value then return true
+      if @transport.value and @checkDelivery @delivery then return true else return false
 
-#
+    @checkDelivery =(item)=>
+      a = true
+      i = 0
+      for key, value of item
+        i += 1
+        if !value then a = false
+      if i != 5 then a = false
+      a
 
 
+
+    @changePriority = (model) => @currentTab.priority = model.value
 
     @syncOnChange = (obj, key, oldKey = null) =>
       oldKey ?= 'old' + key.charAt(0).toUpperCase() + key.slice(1)
       if obj[key] isnt obj[oldKey] then obj.update().then (data) => obj[oldKey] = obj[key]
 
     @orderFinished = =>
-      if !@checkSubmitFrom()
+      if @checkSubmitFrom()
         order = new Order()
+        @delivery.priority = @priority.value
         order.temp_order_id = @currentTab.id
         order.temp_delivery = @delivery
         order.save()
@@ -91,6 +100,8 @@ Sky.controller 'saleCtrl', ['focus', '$routeParams','$http', 'Common', 'Product'
       @searchText = tab.searchText
       @sellingProduct = tab.sellingProduct
       @sellingDetail = tab.sellingDetail
+      @delivery = tab.sellingDelivery
+      @priority = @priorities.find {value: (if tab.deliveryPriority then tab.deliveryPriority else 0 )}
       @currentTab = tab
       @reloadTabDetails tab
 
@@ -111,6 +122,12 @@ Sky.controller 'saleCtrl', ['focus', '$routeParams','$http', 'Common', 'Product'
       @currentTab.searchText = @searchText
       @currentTab.sellingProduct = @sellingProduct
       @currentTab.sellingDetail = @sellingDetail
+      @currentTab.sellingDelivery = @delivery
+      @currentTab.deliveryPriority = @priority.value
+
+
+
+
 
     @reloadTabDetails = (tab) =>
       @tabDetails = []

@@ -28,24 +28,36 @@ Sky.controller 'deliveryCtrl', ['focus', '$routeParams','$http', 'Common', 'Merc
 
     @changeCurrentWarehouse = (item) => console.log item
 
-    @changeStatus = (item, index)=>
-      if item.status == 0 #Nhân viên nhận đơn giao hàng
-        item.status = 1
-        item.shipper = Common.currentMerchantAccount.id
+    @changeStatus = (item, value)=>
+      if item.status == 2 and value
+        item.status = 3
         item.update().then (data) => @calculationReturnStatus (data)
-#      if item.status == 2 #Nhân viên nhận sản phẩm của đơn giao hàng
-#      if item.status == 3 #Nhân viên đi giao đơn hàng
-#      if item.status == 4 #Nhân viên giao hàng thành công
-#      if item.status == 5 #Nhân viên giao thất bại
+      if item.status == 2 and !value
+        item.status = 4
+        item.update().then (data) => @calculationReturnStatus (data)
+      if item.status == 1 then item.status = 2; item.update().then (data) => @calculationReturnStatus (data)
+      if item.status == 0 then item.status = 1; item.shipper = Common.currentMerchantAccount.id; item.update().then (data) => @calculationReturnStatus (data)
+
+
 
 
     @calculationReturnStatus = (item)=>
-      if item.status == 0 then item.statusShow = 'có thể nhận'; item.showButton = 'Nhận Đơn Giao Hàng'
-      if item.status == 1 then item.statusShow = 'đã nhận đơn hàng'; item.showButton = 'Đã Nhận SP Từ Kho'
-      if item.status == 2 then item.statusShow = 'đã nhận sản phẩm đơn hàng'; item.showButton = 'Đang Đi Giao Hàng'
-      if item.status == 3 then item.statusShow = 'đã đi giao đơn hàng'; item.showButton = 'Giao Thành - Thất Bại'
-      if item.status == 4 then item.statusShow = 'đã giao hàng thành công'
-      if item.status == 5 then item.statusShow = 'đã giao hàng thất bại'
+      if item.status == 0   then item.statusShow   = 'có thể nhận';           item.showButton = ['Nhận Giao Hàng']
+      if item.status == 1   then item.statusShow   = 'đã nhận';               item.showButton = ['Đi Giao Hàng']
+      if item.status == 2   then item.statusShow   = 'đang giao hàng';        item.showButton = ['Thành Công', 'Thất Bại']
+      if item.status == 3   then item.statusShow   = 'Thành Công'
+      if item.status == 4   then item.statusShow   = 'Thất Bại'
+      if item.priority == 0 then item.showPriority = 'Bình Thường'
+      if item.priority == 1 then item.showPriority = 'Ưu Tiên Loại 1'
+      if item.priority == 2 then item.showPriority = 'Ưu Tiên Loại 2'
+      if item.priority == 3 then item.showPriority = 'Ưu Tiên Loại 3'
+
+      if !item.shipper                then item.showShipper = 'chưa có' else item.showShipper = item.shippers.displayName
+      if !item.deliveryDateShipper    then item.showDeliveryDateShipper = 'chưa có' else item.showDeliveryDateShipper = item.deliveryDateShipper
+      if !item.deliveryDateTransport  then item.showDeliveryDateTransport = 'chưa có' else item.showDeliveryDateTransport = item.deliveryDateTransport
+      if !item.deliveryDateFinish     then item.showDeliveryDateFinish = 'chưa có' else item.showDeliveryDateFinish = item.deliveryDateFinish
+
+
       item
 
     return

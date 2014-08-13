@@ -451,17 +451,25 @@ class InitializeDatabase < ActiveRecord::Migration
       t.belongs_to :warehouse, :null => false
       t.belongs_to :order, :null => false
       t.belongs_to :merchant_account, :null => false
-      t.integer :shipper
-      t.string :name
-      t.integer :status, :default=>false
 
+      t.string :name
       t.date :creation_date,:null => false #ngay dat hang
       t.date :delivery_date, :null => false #ngay giao hang
       t.string :delivery_address, :null => false #đia chi giao hang
       t.string :contact_name, :null => false #tên nguoi lien lac
       t.string :contact_phone, :null => false #so dt nguoi lien lac
       t.decimal :transportation_fee, :null => false #phi giao hang
+
       t.string :comment, :null => false
+      t.integer :shipper
+      t.datetime :delivery_date_shipper
+      t.datetime :delivery_date_transport
+      t.datetime :delivery_date_finish
+      t.integer :status, :default=>false
+      t.integer :priority
+
+
+
       #tình trang status
       #0 mới khởi tạo
       #1 đang giao hang

@@ -19,14 +19,17 @@
 <table class="table">
   <thead>
   <th>Mã Order</th>
-  <th>Tên Người Liên Lạc</th>
-  <th>Số Điện Thoại</th>
-  <th>Địa Chỉ Giao Hàng</th>
+  <th>Liên Lạc</th>
+  <th>Số ĐT</th>
+  <th>Địa Chỉ</th>
   <th>Ngày Đặt Hàng</th>
   <th>Ngày Giao Hàng</th>
-  <th>Phí Vận Chuyển</th>
-  <th>Ghi Chú</th>
-  <th>NV Giao Hàng</th>
+  <th>Thời Gian Còn Lại</th>
+  <th>Độ Ưu Tiên</th>
+  <th>Người Giao</th>
+  <th>TG Nhận</th>
+  <th>TG Đi Giao</th>
+  <th>TG Hoàn Thành</th>
   <th>Tình Trạng</th>
   </thead>
   <tr ng-repeat="item in deliveryCtrl.deliveries">
@@ -36,11 +39,51 @@
     <td>{{item.deliveryAddress}}</td>
     <td>{{item.creationDate}}</td>
     <td>{{item.deliveryDate}}</td>
-    <td>{{item.transportationFee}}</td>
-    <td>{{item.comment}}</td>
-    <td>{{item.shippers.displayName}}</td>
+    <td>{{item.creationDate | fromNow}}</td>
+    <td>{{item.showPriority}}</td>
+    <td>{{item.showShipper}}</td>
+    <td>{{item.showDeliveryDateShipper | date:'HH:mm d/M/yy'}}</td>
+    <td>{{item.showDeliveryDateTransport | date:'HH:mm d/M/yy'}}</td>
+    <td>{{item.showDeliveryDateFinish | date:'HH:mm d/M/yy'}}</td>
     <td>{{item.statusShow}}</td>
-    <td><input type="button" value="{{item.showButton}}" ng-click="deliveryCtrl.changeStatus(item, $index)"></td>
-
+    <td>
+      <input type="button" value="{{item.showButton[0]}}" ng-click="deliveryCtrl.changeStatus(item, true)" ng-hide="item.status > 2">
+      <input type="button" value="{{item.showButton[1]}}" ng-click="deliveryCtrl.changeStatus(item, false)" ng-show="item.status == 2">
+    </td>
   </tr>
 </table>
+
+<!--<table class="table">-->
+  <!--<thead>-->
+  <!--<th>Mã Order</th>-->
+  <!--<th>Tên Người Liên Lạc</th>-->
+  <!--<th>Số Điện Thoại</th>-->
+  <!--<th>Địa Chỉ Giao Hàng</th>-->
+  <!--<th>Ngày Đặt Hàng</th>-->
+  <!--<th>Ngày Giao Hàng</th>-->
+  <!--<th>Phí Vận Chuyển</th>-->
+  <!--<th>Ghi Chú</th>-->
+  <!--<th>Độ Ưu Tiên</th>-->
+  <!--<th>Người Giao</th>-->
+  <!--<th>TG Nhận Giao</th>-->
+  <!--<th>TG Hoàn Thành</th>-->
+  <!--<th>Tình Trạng</th>-->
+  <!--</thead>-->
+  <!--<tr ng-repeat="item in deliveryCtrl.deliveries">-->
+    <!--<td>{{item.name}}</td>-->
+    <!--<td>{{item.contactName}}</td>-->
+    <!--<td>{{item.contactPhone}}</td>-->
+    <!--<td>{{item.deliveryAddress}}</td>-->
+    <!--<td>{{item.creationDate}}</td>-->
+    <!--<td>{{item.deliveryDate}}</td>-->
+    <!--<td>{{item.transportationFee}}</td>-->
+    <!--<td>{{item.comment}}</td>-->
+    <!--<td> </td>-->
+    <!--<td>{{item.shippers.displayName}}</td>-->
+    <!--<td></td>-->
+    <!--<td></td>-->
+    <!--<td>{{item.statusShow}}</td>-->
+    <!--<td><input type="button" value="{{item.showButton}}" ng-click="deliveryCtrl.changeStatus(item, $index)"></td>-->
+
+  <!--</tr>-->
+<!--</table>-->

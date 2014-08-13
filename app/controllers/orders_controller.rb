@@ -182,7 +182,8 @@ class OrdersController < MerchantApplicationController
         :contact_name => delivery['contact_name'],
         :contact_phone => delivery['contact_phone'],
         :transportation_fee => delivery['transportation_fee'],
-        :comment => delivery['comment'],
+        :comment => '',
+        :priority => delivery['priority'],
         :status => :initializing
     )
   end

@@ -22,3 +22,9 @@ class Sky.Transports
 class Sky.Payments
   @CASH:      { value: 0, display: 'tiền mặt'}
   @DEBT:      { value: 1, display: 'nợ'}
+
+class Sky.Priorities
+  @Priority01:      { value: 0, display: 'bình thường'}
+  @Priority02:      { value: 1, display: 'Ưu tiên 01'}
+  @Priority03:      { value: 2, display: 'Ưu tiên 02'}
+  @Priority04:      { value: 3, display: 'Ưu tiên 03'}

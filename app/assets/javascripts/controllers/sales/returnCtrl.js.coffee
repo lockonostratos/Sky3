@@ -31,6 +31,9 @@ Sky.controller 'returnCtrl', ['$routeParams', 'Common', 'MerchantAccount', 'Ware
         if @currentOrder.return == 'not_return' then @currentOrder.return = 'Không Có Trả Hàng'; @showCreateReturn = true
         if @currentOrder.return == 'returning' then @currentOrder.return = 'Đang Trả Hàng'; @showCreateReturn = false
 
+        Return.query().then (data)=>
+          @returns = data
+
     @createReturn = =>
       if @showCreateReturn
         newReturn = new Return({order_id: @currentOrder.id, name: @currentOrder.name})

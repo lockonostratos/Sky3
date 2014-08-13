@@ -12,7 +12,7 @@
          typeahead-on-select="saleCtrl.productFoundAction($item)" />
 
   <sky-button color="shadow" caption="Thêm Sản Phẩm" ng-click="saleCtrl.addOrderDetail()" disabled="saleCtrl.sellingDetail == null"></sky-button>
-  <sky-button color="shadow" caption="Hoàn Tất" disabled="saleCtrl.checkSubmitFrom()" ng-click="saleCtrl.orderFinished()"></sky-button>
+  <sky-button color="shadow" caption="Hoàn Tất" disabled="!saleCtrl.checkSubmitFrom()" ng-click="saleCtrl.orderFinished()"></sky-button>
 </div>
 <br />
 <div class="row no-margin">
@@ -67,12 +67,13 @@
 </div>
 <div collapse="!saleCtrl.transport.value">
   <div class="well well-lg" >
-      Tên người nhận: <input type="text" class="sky-control shadow" ng-model="saleCtrl.delivery.contact_name" />
-      Số ĐT:          <input type="text" class="sky-control shadow" ng-model="saleCtrl.delivery.contact_phone" />
-      Địa Chỉ:        <input type="text" class="sky-control shadow" ng-model="saleCtrl.delivery.delivery_address" />
-      Ngày Giao:      <input type="text" class="sky-control shadow" ng-model="saleCtrl.delivery.delivery_date" />
-      PVC:            <input type="text" class="sky-control shadow" ng-model="saleCtrl.delivery.transportation_fee" />
-      Ghi Chú:        <input type="text" class="sky-control shadow" ng-model="saleCtrl.delivery.comment" />
+      Người nhận:<input type="text" class="sky-control shadow" ng-model="saleCtrl.delivery.contact_name" />
+      ĐT:        <input type="text" class="sky-control shadow" ng-model="saleCtrl.delivery.contact_phone" />
+      Địa Chỉ:   <input type="text" class="sky-control shadow" ng-model="saleCtrl.delivery.delivery_address" />
+      Ngày Giao: <input type="text" class="sky-control shadow" ng-model="saleCtrl.delivery.delivery_date" />
+      PVC:       <input type="text" class="sky-control shadow" ng-model="saleCtrl.delivery.transportation_fee" />
+      Đô Ưu Tiên:<sky-select options="saleCtrl.priorities" model="saleCtrl.priority" color="pumpkin shadow"
+                           caption="display" change="saleCtrl.changePriority(model)"></sky-select>
   </div>
 </div>
 <div class="row no-margin">

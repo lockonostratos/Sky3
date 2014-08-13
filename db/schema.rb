@@ -84,19 +84,23 @@ ActiveRecord::Schema.define(version: 20140711100003) do
   end
 
   create_table "deliveries", force: true do |t|
-    t.integer  "warehouse_id",                                 null: false
-    t.integer  "order_id",                                     null: false
-    t.integer  "merchant_account_id",                          null: false
-    t.integer  "shipper"
+    t.integer  "warehouse_id",                                     null: false
+    t.integer  "order_id",                                         null: false
+    t.integer  "merchant_account_id",                              null: false
     t.string   "name"
-    t.integer  "status",                                       null: false
-    t.date     "creation_date",                                null: false
-    t.date     "delivery_date",                                null: false
-    t.string   "delivery_address",                             null: false
-    t.string   "contact_name",                                 null: false
-    t.string   "contact_phone",                                null: false
-    t.decimal  "transportation_fee",  precision: 10, scale: 0, null: false
-    t.string   "comment",                                      null: false
+    t.date     "creation_date",                                    null: false
+    t.date     "delivery_date",                                    null: false
+    t.string   "delivery_address",                                 null: false
+    t.string   "contact_name",                                     null: false
+    t.string   "contact_phone",                                    null: false
+    t.decimal  "transportation_fee",      precision: 10, scale: 0, null: false
+    t.string   "comment",                                          null: false
+    t.integer  "shipper"
+    t.datetime "delivery_date_shipper"
+    t.datetime "delivery_date_transport"
+    t.datetime "delivery_date_finish"
+    t.integer  "status",                                           null: false
+    t.integer  "priority"
     t.datetime "created_at"
     t.datetime "updated_at"
   end

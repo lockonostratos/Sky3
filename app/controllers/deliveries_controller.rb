@@ -39,11 +39,32 @@ class DeliveriesController < MerchantApplicationController
 
   def update
     @delivery = Delivery.find(delivery_params[:id])
-    if @delivery #and @delivery.status == 0 and delivery_params[:status] == 1
+    if @delivery and delivery_params[:status] == 1 and @delivery.status == 'initializing'
       @delivery.status = 1
       @delivery.shipper = delivery_params[:shipper]
+      @delivery.delivery_date_shipper = Time.now
       @delivery.save()
+    elsif @delivery and delivery_params[:status] == 2 and @delivery.status == 'delivery'
+      @delivery.status = 2
+      @delivery.delivery_date_transport = Time.now
+      @delivery.save()
+    elsif @delivery and delivery_params[:status] == 3 and @delivery.status == 'delivering'
+      @delivery.status = 3
+      @delivery.delivery_date_finish = Time.now
+      @delivery.save()
+      order = @delivery.order
+      order.status = 1
+      order.save()
+    elsif @delivery and delivery_params[:status] == 4 and @delivery.status == 'delivering'
+      @delivery.status = 4
+      @delivery.delivery_date_finish = Time.now
+      @delivery.save()
+      order = @delivery.order
+      order.status = 3
+      order.save()
     end
+
+
     # respond_to do |format|
     #   if delivery.success == true || delivery.status != 0 || @delivery.status == 0
     #     format.html { redirect_to @delivery, notice: 'Ko the success' }
